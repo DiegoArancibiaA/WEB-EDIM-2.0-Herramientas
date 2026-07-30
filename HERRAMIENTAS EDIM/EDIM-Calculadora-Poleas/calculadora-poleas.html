@@ -1,0 +1,909 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>EDIM SOLUCIONES - Calculadora de Poleas de Transmision</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;800;900&family=Rajdhani:wght@300;400;500;600;700&family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --white: #FFFFFF;
+  --black: #121212;
+  --light-gray: #F2F2F2;
+  --mid-gray: #D9D9D9;
+  --dark-gray: #3A3A3A;
+  --red-primary: #E30613;
+  --red-light: #FF1A2A;
+  --red-gradient: linear-gradient(135deg, #E30613 0%, #FF1A2A 100%);
+  --shadow-light: #FFFFFF;
+  --shadow-dark: #B8B9BE;
+  --shadow-dark-inset: #B8B9BE;
+  --shadow-light-inset: #FFFFFF;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Rajdhani', sans-serif;
+  background: var(--light-gray);
+  color: var(--black);
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+.container {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+/* HEADER */
+.header {
+  text-align: center;
+  padding: 30px 20px;
+  margin-bottom: 30px;
+  border-radius: 20px;
+  background: var(--light-gray);
+  box-shadow: 8px 8px 16px var(--shadow-dark), -8px -8px 16px var(--shadow-light);
+}
+
+.header h1 {
+  font-family: 'Orbitron', sans-serif;
+  font-size: 2rem;
+  font-weight: 800;
+  color: var(--black);
+  letter-spacing: 2px;
+  text-transform: uppercase;
+}
+
+.header .brand {
+  display: inline-block;
+  background: var(--red-gradient);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.header p {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 1rem;
+  color: var(--dark-gray);
+  margin-top: 8px;
+  font-weight: 400;
+}
+
+.header .divider {
+  width: 80px;
+  height: 4px;
+  background: var(--red-gradient);
+  margin: 15px auto 0;
+  border-radius: 2px;
+}
+
+/* GRID LAYOUT */
+.grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 24px;
+  margin-bottom: 24px;
+}
+
+@media (max-width: 900px) {
+  .grid {
+    grid-template-columns: 1fr;
+  }
+  .header h1 {
+    font-size: 1.4rem;
+  }
+}
+
+/* CARDS */
+.card {
+  background: var(--light-gray);
+  border-radius: 20px;
+  padding: 24px;
+  box-shadow: 8px 8px 16px var(--shadow-dark), -8px -8px 16px var(--shadow-light);
+}
+
+.card-title {
+  font-family: 'Orbitron', sans-serif;
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: var(--black);
+  margin-bottom: 18px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.card-title svg {
+  width: 22px;
+  height: 22px;
+  flex-shrink: 0;
+}
+
+/* INPUTS NEUMORPHIC */
+.input-group {
+  margin-bottom: 16px;
+}
+
+.input-group label {
+  display: block;
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--dark-gray);
+  margin-bottom: 8px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.input-neu {
+  width: 100%;
+  padding: 14px 18px;
+  border: none;
+  border-radius: 12px;
+  background: var(--light-gray);
+  box-shadow: inset 4px 4px 8px var(--shadow-dark-inset), inset -4px -4px 8px var(--shadow-light-inset);
+  font-family: 'Rajdhani', sans-serif;
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--black);
+  outline: none;
+  transition: all 0.3s ease;
+}
+
+.input-neu:focus {
+  box-shadow: inset 6px 6px 12px var(--shadow-dark-inset), inset -6px -6px 12px var(--shadow-light-inset);
+}
+
+.input-neu::placeholder {
+  color: var(--mid-gray);
+  font-weight: 400;
+}
+
+select.input-neu {
+  cursor: pointer;
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%233A3A3A' d='M6 8L1 3h10z'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 16px center;
+}
+
+/* BUTTONS */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 14px 32px;
+  border: none;
+  border-radius: 14px;
+  font-family: 'Orbitron', sans-serif;
+  font-size: 0.85rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.btn-primary {
+  background: var(--red-gradient);
+  color: var(--white);
+  box-shadow: 6px 6px 12px rgba(227, 6, 19, 0.3), -4px -4px 10px var(--shadow-light);
+}
+
+.btn-primary:hover {
+  transform: translateY(-2px);
+  box-shadow: 8px 8px 20px rgba(227, 6, 19, 0.4), -4px -4px 10px var(--shadow-light);
+}
+
+.btn-primary:active {
+  transform: translateY(0);
+  box-shadow: inset 3px 3px 6px rgba(0,0,0,0.2), inset -2px -2px 6px rgba(255,255,255,0.2);
+}
+
+.btn-secondary {
+  background: var(--light-gray);
+  color: var(--dark-gray);
+  box-shadow: 6px 6px 12px var(--shadow-dark), -4px -4px 10px var(--shadow-light);
+}
+
+.btn-secondary:hover {
+  box-shadow: 8px 8px 16px var(--shadow-dark), -4px -4px 10px var(--shadow-light);
+}
+
+.btn-row {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin-top: 20px;
+}
+
+/* RESULTS */
+.result-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px;
+}
+
+@media (max-width: 600px) {
+  .result-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.result-item {
+  background: var(--light-gray);
+  border-radius: 14px;
+  padding: 16px;
+  box-shadow: inset 3px 3px 6px var(--shadow-dark-inset), inset -3px -3px 6px var(--shadow-light-inset);
+}
+
+.result-label {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 0.7rem;
+  font-weight: 600;
+  color: var(--dark-gray);
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+  margin-bottom: 6px;
+}
+
+.result-value {
+  font-family: 'Orbitron', sans-serif;
+  font-size: 1.3rem;
+  font-weight: 700;
+  color: var(--black);
+}
+
+.result-value.alert {
+  color: var(--red-primary);
+}
+
+.result-value.ok {
+  color: #2E7D32;
+}
+
+/* SVG POLEAS */
+.poleas-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 20px;
+  background: var(--light-gray);
+  border-radius: 20px;
+  box-shadow: inset 4px 4px 10px var(--shadow-dark-inset), inset -4px -4px 10px var(--shadow-light-inset);
+  margin-bottom: 20px;
+  overflow: hidden;
+}
+
+.poleas-container svg {
+  max-width: 100%;
+  height: auto;
+}
+
+/* TABLE */
+.table-neu {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+  font-family: 'Rajdhani', sans-serif;
+  font-size: 0.9rem;
+}
+
+.table-neu th {
+  background: var(--light-gray);
+  box-shadow: inset 2px 2px 4px var(--shadow-dark-inset), inset -2px -2px 4px var(--shadow-light-inset);
+  padding: 12px 10px;
+  font-family: 'Orbitron', sans-serif;
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: var(--dark-gray);
+  text-align: center;
+}
+
+.table-neu th:first-child {
+  border-radius: 10px 0 0 0;
+}
+
+.table-neu th:last-child {
+  border-radius: 0 10px 0 0;
+}
+
+.table-neu td {
+  padding: 10px;
+  text-align: center;
+  background: var(--light-gray);
+  box-shadow: inset 1px 1px 3px var(--shadow-dark-inset), inset -1px -1px 3px var(--shadow-light-inset);
+  font-weight: 600;
+}
+
+.table-neu tr:last-child td:first-child {
+  border-radius: 0 0 0 10px;
+}
+
+.table-neu tr:last-child td:last-child {
+  border-radius: 0 0 10px 0;
+}
+
+/* FULL WIDTH */
+.full-width {
+  grid-column: 1 / -1;
+}
+
+/* FOOTER */
+.footer {
+  text-align: center;
+  padding: 20px;
+  margin-top: 20px;
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 0.8rem;
+  color: var(--dark-gray);
+}
+
+.footer .brand-footer {
+  font-family: 'Orbitron', sans-serif;
+  font-weight: 700;
+  color: var(--red-primary);
+}
+
+/* ANIMATIONS */
+@keyframes pulse-alert {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.6; }
+}
+
+.pulse-alert {
+  animation: pulse-alert 1.5s ease-in-out infinite;
+}
+
+/* SCROLLBAR */
+::-webkit-scrollbar {
+  width: 8px;
+}
+::-webkit-scrollbar-track {
+  background: var(--light-gray);
+}
+::-webkit-scrollbar-thumb {
+  background: var(--mid-gray);
+  border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--dark-gray);
+}
+
+/* TOOLTIP */
+.tooltip {
+  position: relative;
+  cursor: help;
+}
+.tooltip::after {
+  content: attr(data-tip);
+  position: absolute;
+  bottom: 120%;
+  left: 50%;
+  transform: translateX(-50%);
+  background: var(--black);
+  color: var(--white);
+  padding: 6px 12px;
+  border-radius: 8px;
+  font-size: 0.75rem;
+  font-family: 'Space Grotesk', sans-serif;
+  white-space: nowrap;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s;
+  z-index: 100;
+}
+.tooltip:hover::after {
+  opacity: 1;
+}
+</style>
+</head>
+<body>
+
+<div class="container">
+
+  <!-- HEADER -->
+  <div class="header">
+    <h1><span class="brand">EDIM SOLUCIONES</span></h1>
+    <p>Calculadora de Poleas de Transmision por Correa</p>
+    <div class="divider"></div>
+  </div>
+
+  <!-- INPUT SECTION -->
+  <div class="grid">
+    <div class="card">
+      <div class="card-title">
+        <svg viewBox="0 0 24 24" fill="none" stroke="#E30613" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M12 1v6m0 6v6m4.22-10.22l4.24-4.24M6.34 6.34L2.1 2.1m17.8 17.8l-4.24-4.24M6.34 17.66l-4.24 4.24M23 12h-6m-6 0H1m20.24-4.24l-4.24 4.24M6.34 6.34l-4.24 4.24"/></svg>
+        Parametros de Entrada
+      </div>
+
+      <div class="input-group">
+        <label>Tipo de Correa</label>
+        <select id="tipoCorrea" class="input-neu" onchange="actualizarDmin()">
+          <option value="A">Correa V - Seccion A (13 x 8 mm)</option>
+          <option value="B">Correa V - Seccion B (17 x 11 mm)</option>
+          <option value="C">Correa V - Seccion C (22 x 14 mm)</option>
+          <option value="D">Correa V - Seccion D (32 x 19 mm)</option>
+          <option value="E">Correa V - Seccion E (38 x 25 mm)</option>
+          <option value="3V">Correa Estrecha 3V / SPZ</option>
+          <option value="5V">Correa Estrecha 5V / SPB</option>
+          <option value="8V">Correa Estrecha 8V / SPC</option>
+          <option value="PL">Correa Poly-V PL</option>
+          <option value="PM">Correa Poly-V PM</option>
+        </select>
+      </div>
+
+      <div class="input-group">
+        <label>Diametro Polea Conductora d1 (mm)</label>
+        <input type="number" id="d1" class="input-neu" placeholder="Ej: 140" value="140" min="1">
+      </div>
+
+      <div class="input-group">
+        <label>Diametro Polea Conducida d2 (mm)</label>
+        <input type="number" id="d2" class="input-neu" placeholder="Ej: 280" value="280" min="1">
+      </div>
+
+      <div class="input-group">
+        <label>RPM Motor (n1)</label>
+        <input type="number" id="n1" class="input-neu" placeholder="Ej: 1440" value="1440" min="1">
+      </div>
+
+      <div class="input-group">
+        <label>Potencia a Transmitir P (kW)</label>
+        <input type="number" id="potencia" class="input-neu" placeholder="Ej: 5.5" value="5.5" step="0.1" min="0">
+      </div>
+
+      <div class="input-group">
+        <label>Distancia entre Ejes C (mm)</label>
+        <input type="number" id="distancia" class="input-neu" placeholder="Ej: 700" value="700" min="1">
+      </div>
+
+      <div class="input-group">
+        <label>Numero de Canales / Correas</label>
+        <input type="number" id="numCorreas" class="input-neu" placeholder="Ej: 2" value="2" min="1">
+      </div>
+
+      <div class="btn-row">
+        <button class="btn btn-primary" onclick="calcular()">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
+          Calcular
+        </button>
+        <button class="btn btn-secondary" onclick="limpiar()">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
+          Limpiar
+        </button>
+      </div>
+    </div>
+
+    <!-- RESULTS -->
+    <div class="card">
+      <div class="card-title">
+        <svg viewBox="0 0 24 24" fill="none" stroke="#E30613" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
+        Resultados del Calculo
+      </div>
+
+      <div class="result-grid" id="resultados">
+        <div class="result-item">
+          <div class="result-label">Velocidad Periferica v</div>
+          <div class="result-value" id="res_v">-- m/s</div>
+        </div>
+        <div class="result-item">
+          <div class="result-label">Relacion de Transmision i</div>
+          <div class="result-value" id="res_i">--</div>
+        </div>
+        <div class="result-item">
+          <div class="result-label">RPM Salida n2</div>
+          <div class="result-value" id="res_n2">-- rpm</div>
+        </div>
+        <div class="result-item">
+          <div class="result-label">Par Transmitido T</div>
+          <div class="result-value" id="res_T">-- N.m</div>
+        </div>
+        <div class="result-item">
+          <div class="result-label">Diferencia Tensiones F1-F2</div>
+          <div class="result-value" id="res_dF">-- N</div>
+        </div>
+        <div class="result-item">
+          <div class="result-label">Fuerza Centrifuga Fc</div>
+          <div class="result-value" id="res_Fc">-- N</div>
+        </div>
+        <div class="result-item">
+          <div class="result-label">Longitud Correa L</div>
+          <div class="result-value" id="res_L">-- mm</div>
+        </div>
+        <div class="result-item">
+          <div class="result-label">Verificacion Vel. Max</div>
+          <div class="result-value" id="res_verif">--</div>
+        </div>
+      </div>
+
+      <div style="margin-top: 16px;">
+        <div class="result-item">
+          <div class="result-label">Diametro Minimo Recomendado</div>
+          <div class="result-value" id="res_dmin">-- mm</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SVG POLEAS -->
+  <div class="card full-width">
+    <div class="card-title">
+      <svg viewBox="0 0 24 24" fill="none" stroke="#E30613" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="4"/><line x1="12" y1="2" x2="12" y2="8"/><line x1="12" y1="16" x2="12" y2="22"/><line x1="2" y1="12" x2="8" y2="12"/><line x1="16" y1="12" x2="22" y2="12"/></svg>
+      Visualizacion de la Pareja de Poleas
+    </div>
+    <div class="poleas-container" id="poleasSvgContainer">
+      <svg id="poleasSvg" width="800" height="320" viewBox="0 0 800 320">
+        <defs>
+          <linearGradient id="metalGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" style="stop-color:#D9D9D9"/>
+            <stop offset="50%" style="stop-color:#F2F2F2"/>
+            <stop offset="100%" style="stop-color:#B0B0B0"/>
+          </linearGradient>
+          <linearGradient id="metalDark" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" style="stop-color:#3A3A3A"/>
+            <stop offset="50%" style="stop-color:#5A5A5A"/>
+            <stop offset="100%" style="stop-color:#2A2A2A"/>
+          </linearGradient>
+          <linearGradient id="correaGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+            <stop offset="0%" style="stop-color:#3A3A3A"/>
+            <stop offset="50%" style="stop-color:#121212"/>
+            <stop offset="100%" style="stop-color:#3A3A3A"/>
+          </linearGradient>
+          <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%">
+            <feDropShadow dx="3" dy="4" stdDeviation="5" flood-color="#000000" flood-opacity="0.25"/>
+          </filter>
+        </defs>
+
+        <!-- Eje base -->
+        <rect x="50" y="280" width="700" height="8" rx="4" fill="#3A3A3A" opacity="0.3"/>
+
+        <!-- Polea 1 (conductora) -->
+        <g id="polea1Group" transform="translate(180, 160)">
+          <ellipse cx="0" cy="0" rx="70" ry="70" fill="url(#metalGrad)" stroke="#3A3A3A" stroke-width="2" filter="url(#shadow)"/>
+          <ellipse cx="0" cy="0" rx="55" ry="55" fill="none" stroke="#D9D9D9" stroke-width="1.5"/>
+          <ellipse cx="0" cy="0" rx="40" ry="40" fill="none" stroke="#D9D9D9" stroke-width="1"/>
+          <ellipse cx="0" cy="0" rx="20" ry="20" fill="url(#metalDark)" stroke="#121212" stroke-width="1.5"/>
+          <ellipse cx="0" cy="0" rx="8" ry="8" fill="#121212"/>
+          <text x="0" y="90" text-anchor="middle" font-family="Orbitron" font-size="11" fill="#3A3A3A" font-weight="700">POLEA 1</text>
+          <text x="0" y="105" text-anchor="middle" font-family="Rajdhani" font-size="10" fill="#3A3A3A" font-weight="600">d1 = 140 mm</text>
+        </g>
+
+        <!-- Polea 2 (conducida) -->
+        <g id="polea2Group" transform="translate(580, 160)">
+          <ellipse cx="0" cy="0" rx="110" ry="110" fill="url(#metalGrad)" stroke="#3A3A3A" stroke-width="2" filter="url(#shadow)"/>
+          <ellipse cx="0" cy="0" rx="90" ry="90" fill="none" stroke="#D9D9D9" stroke-width="1.5"/>
+          <ellipse cx="0" cy="0" rx="70" ry="70" fill="none" stroke="#D9D9D9" stroke-width="1"/>
+          <ellipse cx="0" cy="0" rx="35" ry="35" fill="url(#metalDark)" stroke="#121212" stroke-width="1.5"/>
+          <ellipse cx="0" cy="0" rx="12" ry="12" fill="#121212"/>
+          <text x="0" y="130" text-anchor="middle" font-family="Orbitron" font-size="11" fill="#3A3A3A" font-weight="700">POLEA 2</text>
+          <text x="0" y="145" text-anchor="middle" font-family="Rajdhani" font-size="10" fill="#3A3A3A" font-weight="600">d2 = 280 mm</text>
+        </g>
+
+        <!-- Correas -->
+        <path id="correaSuperior" d="M 180 90 Q 380 70 580 50" fill="none" stroke="url(#correaGrad)" stroke-width="8" stroke-linecap="round"/>
+        <path id="correaInferior" d="M 180 230 Q 380 250 580 270" fill="none" stroke="url(#correaGrad)" stroke-width="8" stroke-linecap="round"/>
+
+        <!-- Flechas de rotacion -->
+        <g id="flecha1" transform="translate(180, 160)">
+          <path d="M 50 -15 A 52 52 0 0 1 15 50" fill="none" stroke="#E30613" stroke-width="2.5" stroke-linecap="round"/>
+          <polygon points="18,48 12,58 24,54" fill="#E30613"/>
+        </g>
+        <g id="flecha2" transform="translate(580, 160)">
+          <path d="M 80 -25 A 85 85 0 0 1 25 80" fill="none" stroke="#E30613" stroke-width="2.5" stroke-linecap="round"/>
+          <polygon points="28,77 20,88 34,83" fill="#E30613"/>
+        </g>
+
+        <!-- Etiquetas RPM -->
+        <text id="labelN1" x="180" y="40" text-anchor="middle" font-family="Orbitron" font-size="12" fill="#E30613" font-weight="700">1440 RPM</text>
+        <text id="labelN2" x="580" y="30" text-anchor="middle" font-family="Orbitron" font-size="12" fill="#E30613" font-weight="700">720 RPM</text>
+
+        <!-- Dimension -->
+        <line x1="180" y1="280" x2="580" y2="280" stroke="#3A3A3A" stroke-width="1.5" stroke-dasharray="4,3"/>
+        <line x1="180" y1="275" x2="180" y2="285" stroke="#3A3A3A" stroke-width="1.5"/>
+        <line x1="580" y1="275" x2="580" y2="285" stroke="#3A3A3A" stroke-width="1.5"/>
+        <text id="labelDist" x="380" y="298" text-anchor="middle" font-family="Rajdhani" font-size="11" fill="#3A3A3A" font-weight="600">C = 700 mm</text>
+      </svg>
+    </div>
+  </div>
+
+  <!-- TABLA DIAMETROS MINIMOS -->
+  <div class="card full-width">
+    <div class="card-title">
+      <svg viewBox="0 0 24 24" fill="none" stroke="#E30613" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="3" y1="15" x2="21" y2="15"/><line x1="9" y1="3" x2="9" y2="21"/><line x1="15" y1="3" x2="15" y2="21"/></svg>
+      Tabla de Diametros Minimos por Tipo de Correa
+    </div>
+    <div style="overflow-x: auto;">
+      <table class="table-neu">
+        <thead>
+          <tr>
+            <th>Seccion</th>
+            <th>Dimensiones (bxh)</th>
+            <th>Diam. Min. Normal (mm)</th>
+            <th>Diam. Min. Admisible (mm)</th>
+            <th>Fuerza Tang. T (kg)</th>
+            <th>Vel. Max (m/s)</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td>A</td><td>13 x 8</td><td>90</td><td>80</td><td>14</td><td>25</td></tr>
+          <tr><td>B</td><td>17 x 11</td><td>140</td><td>125</td><td>20</td><td>25</td></tr>
+          <tr><td>C</td><td>22 x 14</td><td>224</td><td>200</td><td>45</td><td>25</td></tr>
+          <tr><td>D</td><td>32 x 19</td><td>355</td><td>315</td><td>84</td><td>25</td></tr>
+          <tr><td>E</td><td>38 x 25</td><td>500</td><td>450</td><td>120</td><td>25</td></tr>
+          <tr><td>3V / SPZ</td><td>9.7 x 8</td><td>63</td><td>56</td><td>--</td><td>40</td></tr>
+          <tr><td>5V / SPB</td><td>16.3 x 13</td><td>140</td><td>125</td><td>--</td><td>40</td></tr>
+          <tr><td>8V / SPC</td><td>25.5 x 22</td><td>280</td><td>250</td><td>--</td><td>40</td></tr>
+          <tr><td>PL</td><td>--</td><td>75</td><td>65</td><td>--</td><td>30</td></tr>
+          <tr><td>PM</td><td>--</td><td>180</td><td>160</td><td>--</td><td>30</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- FORMULAS -->
+  <div class="card full-width">
+    <div class="card-title">
+      <svg viewBox="0 0 24 24" fill="none" stroke="#E30613" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
+      Formulas Aplicadas
+    </div>
+    <div class="result-grid">
+      <div class="result-item">
+        <div class="result-label">Velocidad Periferica</div>
+        <div class="result-value" style="font-size:0.95rem;">v = pi * d * n / 60000 [m/s]</div>
+      </div>
+      <div class="result-item">
+        <div class="result-label">Relacion de Transmision</div>
+        <div class="result-value" style="font-size:0.95rem;">i = n1 / n2 = d2 / d1</div>
+      </div>
+      <div class="result-item">
+        <div class="result-label">Par Transmitido</div>
+        <div class="result-value" style="font-size:0.95rem;">T = 9550 * P / n [N.m]</div>
+      </div>
+      <div class="result-item">
+        <div class="result-label">Diferencia de Tensiones</div>
+        <div class="result-value" style="font-size:0.95rem;">F1 - F2 = 2T / d [N]</div>
+      </div>
+      <div class="result-item">
+        <div class="result-label">Fuerza Centrifuga</div>
+        <div class="result-value" style="font-size:0.95rem;">Fc = m * v^2 / r [N]</div>
+      </div>
+      <div class="result-item">
+        <div class="result-label">Longitud Correas</div>
+        <div class="result-value" style="font-size:0.95rem;">L = 2C + pi(D+d)/2 + (D-d)^2/(4C)</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="footer">
+    <span class="brand-footer">EDIM SOLUCIONES</span> - Ingenieria Mecanica y Diseno Industrial
+  </div>
+
+</div>
+
+<script>
+// Datos de diametros minimos
+const dminData = {
+  'A': { normal: 90, admisible: 80, bxh: '13x8', velMax: 25 },
+  'B': { normal: 140, admisible: 125, bxh: '17x11', velMax: 25 },
+  'C': { normal: 224, admisible: 200, bxh: '22x14', velMax: 25 },
+  'D': { normal: 355, admisible: 315, bxh: '32x19', velMax: 25 },
+  'E': { normal: 500, admisible: 450, bxh: '38x25', velMax: 25 },
+  '3V': { normal: 63, admisible: 56, bxh: '9.7x8', velMax: 40 },
+  '5V': { normal: 140, admisible: 125, bxh: '16.3x13', velMax: 40 },
+  '8V': { normal: 280, admisible: 250, bxh: '25.5x22', velMax: 40 },
+  'PL': { normal: 75, admisible: 65, bxh: '--', velMax: 30 },
+  'PM': { normal: 180, admisible: 160, bxh: '--', velMax: 30 }
+};
+
+// Masa lineal aproximada por tipo (kg/m)
+const masaLineal = {
+  'A': 0.102, 'B': 0.178, 'C': 0.315, 'D': 0.546, 'E': 0.918,
+  '3V': 0.074, '5V': 0.196, '8V': 0.575, 'PL': 0.034, 'PM': 0.096
+};
+
+function actualizarDmin() {
+  const tipo = document.getElementById('tipoCorrea').value;
+  const dmin = dminData[tipo];
+  if (dmin) {
+    document.getElementById('res_dmin').textContent = dmin.normal + ' mm (min. admisible: ' + dmin.admisible + ' mm)';
+  }
+}
+
+function calcular() {
+  const tipo = document.getElementById('tipoCorrea').value;
+  const d1 = parseFloat(document.getElementById('d1').value) || 0;
+  const d2 = parseFloat(document.getElementById('d2').value) || 0;
+  const n1 = parseFloat(document.getElementById('n1').value) || 0;
+  const P = parseFloat(document.getElementById('potencia').value) || 0;
+  const C = parseFloat(document.getElementById('distancia').value) || 0;
+  const numCorreas = parseFloat(document.getElementById('numCorreas').value) || 1;
+
+  if (d1 <= 0 || d2 <= 0 || n1 <= 0) {
+    alert('Ingrese valores validos para diametros y RPM');
+    return;
+  }
+
+  const dmin = dminData[tipo];
+  const velMax = dmin ? dmin.velMax : 25;
+
+  // Velocidad periferica v = pi * d * n / 60000
+  const v = (Math.PI * d1 * n1) / 60000;
+
+  // Relacion de transmision i = d2 / d1 = n1 / n2
+  const i = d2 / d1;
+  const n2 = n1 / i;
+
+  // Par transmitido T = 9550 * P / n (usando n1)
+  const T = 9550 * P / n1;
+
+  // Diferencia de tensiones F1 - F2 = 2T / d1
+  const dF = (2 * T) / (d1 / 1000); // d en metros
+
+  // Fuerza centrifuga aproximada Fc = m * v^2 / r
+  const m = (masaLineal[tipo] || 0.1) * numCorreas;
+  const r = d1 / 2000; // radio en metros
+  const Fc = m * (v * v) / r;
+
+  // Longitud de correa L = 2C + pi(D+d)/2 + (D-d)^2/(4C)
+  const L = 2 * C + (Math.PI * (d2 + d1)) / 2 + Math.pow(d2 - d1, 2) / (4 * C);
+
+  // Verificacion velocidad maxima
+  let verifText, verifClass;
+  if (v > velMax) {
+    verifText = 'EXCEDE LIMITE (' + velMax.toFixed(0) + ' m/s)';
+    verifClass = 'alert pulse-alert';
+  } else if (v > velMax * 0.9) {
+    verifText = 'CERCA DEL LIMITE (' + velMax.toFixed(0) + ' m/s)';
+    verifClass = 'alert';
+  } else {
+    verifText = 'OK (limite ' + velMax.toFixed(0) + ' m/s)';
+    verifClass = 'ok';
+  }
+
+  // Mostrar resultados
+  document.getElementById('res_v').textContent = v.toFixed(2) + ' m/s';
+  document.getElementById('res_i').textContent = i.toFixed(2) + ' : 1';
+  document.getElementById('res_n2').textContent = n2.toFixed(1) + ' rpm';
+  document.getElementById('res_T').textContent = T.toFixed(2) + ' N.m';
+  document.getElementById('res_dF').textContent = dF.toFixed(1) + ' N';
+  document.getElementById('res_Fc').textContent = Fc.toFixed(1) + ' N';
+  document.getElementById('res_L').textContent = L.toFixed(0) + ' mm';
+  const verifEl = document.getElementById('res_verif');
+  verifEl.textContent = verifText;
+  verifEl.className = 'result-value ' + verifClass;
+
+  if (dmin) {
+    document.getElementById('res_dmin').textContent = dmin.normal + ' mm (min. admisible: ' + dmin.admisible + ' mm)';
+  }
+
+  // Actualizar SVG
+  actualizarSVG(d1, d2, n1, n2, C);
+}
+
+function actualizarSVG(d1, d2, n1, n2, C) {
+  const svg = document.getElementById('poleasSvg');
+  const maxD = Math.max(d1, d2);
+  const scale = Math.min(1, 200 / maxD);
+  const r1 = (d1 / 2) * scale;
+  const r2 = (d2 / 2) * scale;
+  const gap = 100; // espacio minimo entre poleas
+  const centerX1 = 180;
+  const centerX2 = centerX1 + Math.max(gap, (r1 + r2) * 0.5 + 80);
+  const centerY = 160;
+
+  // Actualizar polea 1
+  const p1 = document.getElementById('polea1Group');
+  p1.setAttribute('transform', `translate(${centerX1}, ${centerY})`);
+  p1.querySelector('ellipse').setAttribute('rx', r1);
+  p1.querySelector('ellipse').setAttribute('ry', r1);
+  p1.querySelectorAll('ellipse')[1].setAttribute('rx', r1 * 0.78);
+  p1.querySelectorAll('ellipse')[1].setAttribute('ry', r1 * 0.78);
+  p1.querySelectorAll('ellipse')[2].setAttribute('rx', r1 * 0.57);
+  p1.querySelectorAll('ellipse')[2].setAttribute('ry', r1 * 0.57);
+  p1.querySelectorAll('ellipse')[3].setAttribute('rx', r1 * 0.28);
+  p1.querySelectorAll('ellipse')[3].setAttribute('ry', r1 * 0.28);
+  p1.querySelectorAll('ellipse')[4].setAttribute('rx', r1 * 0.11);
+  p1.querySelectorAll('ellipse')[4].setAttribute('ry', r1 * 0.11);
+  p1.querySelectorAll('text')[1].textContent = `d1 = ${d1} mm`;
+
+  // Actualizar polea 2
+  const p2 = document.getElementById('polea2Group');
+  p2.setAttribute('transform', `translate(${centerX2}, ${centerY})`);
+  p2.querySelector('ellipse').setAttribute('rx', r2);
+  p2.querySelector('ellipse').setAttribute('ry', r2);
+  p2.querySelectorAll('ellipse')[1].setAttribute('rx', r2 * 0.82);
+  p2.querySelectorAll('ellipse')[1].setAttribute('ry', r2 * 0.82);
+  p2.querySelectorAll('ellipse')[2].setAttribute('rx', r2 * 0.64);
+  p2.querySelectorAll('ellipse')[2].setAttribute('ry', r2 * 0.64);
+  p2.querySelectorAll('ellipse')[3].setAttribute('rx', r2 * 0.32);
+  p2.querySelectorAll('ellipse')[3].setAttribute('ry', r2 * 0.32);
+  p2.querySelectorAll('ellipse')[4].setAttribute('rx', r2 * 0.11);
+  p2.querySelectorAll('ellipse')[4].setAttribute('ry', r2 * 0.11);
+  p2.querySelectorAll('text')[1].textContent = `d2 = ${d2} mm`;
+
+  // Actualizar correas
+  const ySup1 = centerY - r1 - 4;
+  const ySup2 = centerY - r2 - 4;
+  const yInf1 = centerY + r1 + 4;
+  const yInf2 = centerY + r2 + 4;
+  document.getElementById('correaSuperior').setAttribute('d', `M ${centerX1} ${ySup1} Q ${(centerX1+centerX2)/2} ${(ySup1+ySup2)/2 - 10} ${centerX2} ${ySup2}`);
+  document.getElementById('correaInferior').setAttribute('d', `M ${centerX1} ${yInf1} Q ${(centerX1+centerX2)/2} ${(yInf1+yInf2)/2 + 10} ${centerX2} ${yInf2}`);
+
+  // Actualizar flechas
+  const f1 = document.getElementById('flecha1');
+  f1.setAttribute('transform', `translate(${centerX1}, ${centerY})`);
+  const f1r = r1 + 10;
+  f1.querySelector('path').setAttribute('d', `M ${f1r*0.96} ${-f1r*0.29} A ${f1r} ${f1r} 0 0 1 ${f1r*0.29} ${f1r*0.96}`);
+
+  const f2 = document.getElementById('flecha2');
+  f2.setAttribute('transform', `translate(${centerX2}, ${centerY})`);
+  const f2r = r2 + 10;
+  f2.querySelector('path').setAttribute('d', `M ${f2r*0.96} ${-f2r*0.29} A ${f2r} ${f2r} 0 0 1 ${f2r*0.29} ${f2r*0.96}`);
+
+  // Actualizar labels
+  document.getElementById('labelN1').setAttribute('x', centerX1);
+  document.getElementById('labelN1').textContent = n1 + ' RPM';
+  document.getElementById('labelN2').setAttribute('x', centerX2);
+  document.getElementById('labelN2').textContent = n2.toFixed(0) + ' RPM';
+
+  // Actualizar dimension
+  const dimY = 280;
+  document.querySelector('line[x1="50"]').setAttribute('x2', centerX2 + 50);
+  const dimLine = document.querySelectorAll('line[stroke-dasharray="4,3"]')[0];
+  dimLine.setAttribute('x1', centerX1);
+  dimLine.setAttribute('x2', centerX2);
+  document.querySelectorAll('line[x1="180"]')[1].setAttribute('x1', centerX1);
+  document.querySelectorAll('line[x1="180"]')[1].setAttribute('x2', centerX1);
+  document.querySelectorAll('line[x1="580"]')[0].setAttribute('x1', centerX2);
+  document.querySelectorAll('line[x1="580"]')[0].setAttribute('x2', centerX2);
+  document.getElementById('labelDist').setAttribute('x', (centerX1 + centerX2) / 2);
+  document.getElementById('labelDist').textContent = 'C = ' + C + ' mm';
+
+  // Ajustar viewBox si es necesario
+  const totalWidth = centerX2 + 80;
+  if (totalWidth > 800) {
+    svg.setAttribute('viewBox', `0 0 ${totalWidth} 320`);
+    svg.setAttribute('width', totalWidth);
+  }
+}
+
+function limpiar() {
+  document.getElementById('d1').value = '';
+  document.getElementById('d2').value = '';
+  document.getElementById('n1').value = '';
+  document.getElementById('potencia').value = '';
+  document.getElementById('distancia').value = '';
+  document.getElementById('numCorreas').value = '1';
+  document.getElementById('res_v').textContent = '-- m/s';
+  document.getElementById('res_i').textContent = '--';
+  document.getElementById('res_n2').textContent = '-- rpm';
+  document.getElementById('res_T').textContent = '-- N.m';
+  document.getElementById('res_dF').textContent = '-- N';
+  document.getElementById('res_Fc').textContent = '-- N';
+  document.getElementById('res_L').textContent = '-- mm';
+  document.getElementById('res_verif').textContent = '--';
+  document.getElementById('res_verif').className = 'result-value';
+  document.getElementById('res_dmin').textContent = '-- mm';
+}
+
+// Inicializar
+actualizarDmin();
+</script>
+
+</body>
+</html>

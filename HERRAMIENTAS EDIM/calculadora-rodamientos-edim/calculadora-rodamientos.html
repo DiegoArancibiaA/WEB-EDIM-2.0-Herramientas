@@ -1,0 +1,882 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>EDIM SOLUCIONES - Calculadora de Rodamientos ISO 281</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;800;900&family=Rajdhani:wght@300;400;500;600;700&family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg-primary: #F2F2F2; --bg-secondary: #FFFFFF; --bg-dark: #121212;
+  --text-primary: #121212; --text-secondary: #3A3A3A; --text-light: #D9D9D9;
+  --accent: #E30613; --accent-hover: #b8050f; --shadow-light: #FFFFFF;
+  --shadow-dark: #D9D9D9; --shadow-dark-deep: #b8b8b8;
+  --success: #059669; --warning: #d97706;
+}
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body {
+  font-family: 'Space Grotesk', sans-serif; background: var(--bg-primary);
+  color: var(--text-primary); min-height: 100vh; line-height: 1.6;
+}
+.neu-flat {
+  background: var(--bg-primary);
+  box-shadow: 8px 8px 16px var(--shadow-dark), -8px -8px 16px var(--shadow-light);
+  border-radius: 20px; border: 1px solid rgba(255,255,255,0.2);
+}
+.neu-pressed {
+  background: var(--bg-primary);
+  box-shadow: inset 6px 6px 12px var(--shadow-dark), inset -6px -6px 12px var(--shadow-light);
+  border-radius: 16px; border: 1px solid rgba(255,255,255,0.1);
+}
+.neu-convex {
+  background: linear-gradient(145deg, #ffffff, #dadada);
+  box-shadow: 8px 8px 16px var(--shadow-dark), -8px -8px 16px var(--shadow-light);
+  border-radius: 20px;
+}
+.neu-btn {
+  background: linear-gradient(145deg, #ffffff, #dadada);
+  box-shadow: 6px 6px 12px var(--shadow-dark), -6px -6px 12px var(--shadow-light);
+  border: none; border-radius: 14px; cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  font-family: 'Rajdhani', sans-serif; font-weight: 600; font-size: 1rem;
+  color: var(--text-primary); padding: 14px 28px;
+  display: inline-flex; align-items: center; gap: 8px;
+}
+.neu-btn:hover { transform: translateY(-2px); box-shadow: 8px 8px 20px var(--shadow-dark), -8px -8px 20px var(--shadow-light); }
+.neu-btn:active { box-shadow: inset 4px 4px 8px var(--shadow-dark), inset -4px -4px 8px var(--shadow-light); transform: translateY(0); }
+.neu-btn-primary {
+  background: linear-gradient(145deg, #ff1a26, #cc0510); color: white;
+  box-shadow: 6px 6px 12px rgba(227,6,19,0.3), -6px -6px 12px var(--shadow-light);
+}
+.neu-btn-primary:hover { box-shadow: 8px 8px 20px rgba(227,6,19,0.4), -8px -8px 20px var(--shadow-light); }
+.neu-input {
+  background: var(--bg-primary);
+  box-shadow: inset 4px 4px 8px var(--shadow-dark), inset -4px -4px 8px var(--shadow-light);
+  border: none; border-radius: 12px; padding: 14px 18px;
+  font-family: 'Space Grotesk', sans-serif; font-size: 1rem;
+  color: var(--text-primary); width: 100%; transition: all 0.3s ease; outline: none;
+}
+.neu-input:focus { box-shadow: inset 6px 6px 12px var(--shadow-dark), inset -6px -6px 12px var(--shadow-light), 0 0 0 2px rgba(227,6,19,0.2); }
+.neu-input::placeholder { color: #999; }
+.neu-select {
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='%233A3A3A' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+  background-repeat: no-repeat; background-position: right 14px center; background-size: 18px;
+  padding-right: 44px;
+}
+.container { max-width: 1400px; margin: 0 auto; padding: 24px; }
+.header {
+  background: var(--bg-dark); padding: 24px 0; margin-bottom: 32px;
+  position: relative; overflow: hidden;
+}
+.header::before {
+  content: ''; position: absolute; top: 0; left: 0; right: 0; height: 4px;
+  background: linear-gradient(90deg, var(--accent), #ff4757, var(--accent));
+}
+.header-content {
+  max-width: 1400px; margin: 0 auto; padding: 0 24px;
+  display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 16px;
+}
+.logo-section { display: flex; align-items: center; gap: 16px; }
+.logo-icon {
+  width: 56px; height: 56px;
+  background: linear-gradient(145deg, #E30613, #b8050f); border-radius: 16px;
+  display: flex; align-items: center; justify-content: center;
+  box-shadow: 0 8px 24px rgba(227,6,19,0.3);
+}
+.logo-text h1 {
+  font-family: 'Orbitron', sans-serif; font-size: 1.5rem; font-weight: 700;
+  color: white; letter-spacing: 2px; text-transform: uppercase;
+}
+.logo-text span {
+  font-family: 'Rajdhani', sans-serif; font-size: 0.85rem;
+  color: var(--text-light); letter-spacing: 4px; text-transform: uppercase;
+}
+.header-badge {
+  background: rgba(227,6,19,0.15); border: 1px solid rgba(227,6,19,0.3);
+  border-radius: 12px; padding: 10px 20px;
+  font-family: 'Rajdhani', sans-serif; font-weight: 600;
+  color: var(--accent); font-size: 0.9rem; letter-spacing: 1px;
+}
+.main-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin-bottom: 24px; }
+@media (max-width: 1024px) { .main-grid { grid-template-columns: 1fr; } }
+.card { padding: 28px; position: relative; overflow: hidden; }
+.card-header {
+  display: flex; align-items: center; gap: 12px; margin-bottom: 24px;
+  padding-bottom: 16px; border-bottom: 2px solid rgba(227,6,19,0.1);
+}
+.card-icon {
+  width: 44px; height: 44px;
+  background: linear-gradient(145deg, #E30613, #b8050f); border-radius: 12px;
+  display: flex; align-items: center; justify-content: center;
+  box-shadow: 0 4px 12px rgba(227,6,19,0.25);
+}
+.card-icon svg { width: 22px; height: 22px; color: white; }
+.card-title {
+  font-family: 'Orbitron', sans-serif; font-size: 1.1rem; font-weight: 600;
+  color: var(--text-primary); letter-spacing: 1px;
+}
+.card-subtitle {
+  font-family: 'Rajdhani', sans-serif; font-size: 0.85rem;
+  color: var(--text-secondary); margin-top: 2px;
+}
+.form-group { margin-bottom: 20px; }
+.form-label {
+  display: block; font-family: 'Rajdhani', sans-serif; font-weight: 600;
+  font-size: 0.9rem; color: var(--text-secondary); margin-bottom: 8px; letter-spacing: 0.5px;
+}
+.form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+@media (max-width: 640px) { .form-row { grid-template-columns: 1fr; } }
+.input-group { position: relative; }
+.input-unit {
+  position: absolute; right: 16px; top: 50%; transform: translateY(-50%);
+  font-family: 'Rajdhani', sans-serif; font-weight: 500; color: #999;
+  font-size: 0.85rem; pointer-events: none;
+}
+.input-with-unit { padding-right: 60px; }
+.bearing-types { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-bottom: 24px; }
+@media (max-width: 640px) { .bearing-types { grid-template-columns: 1fr; } }
+.bearing-type-card {
+  padding: 20px; cursor: pointer; text-align: center;
+  transition: all 0.3s ease; position: relative;
+}
+.bearing-type-card:hover { transform: translateY(-3px); }
+.bearing-type-card.active {
+  box-shadow: inset 6px 6px 12px var(--shadow-dark), inset -6px -6px 12px var(--shadow-light);
+  border: 2px solid var(--accent);
+}
+.bearing-type-card.active .bearing-type-name { color: var(--accent); }
+.bearing-svg { width: 80px; height: 80px; margin: 0 auto 12px; }
+.bearing-type-name {
+  font-family: 'Orbitron', sans-serif; font-size: 0.8rem; font-weight: 600;
+  color: var(--text-primary); letter-spacing: 1px;
+}
+.bearing-type-desc {
+  font-family: 'Rajdhani', sans-serif; font-size: 0.75rem;
+  color: var(--text-secondary); margin-top: 4px;
+}
+.result-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; margin-top: 20px; }
+@media (max-width: 640px) { .result-grid { grid-template-columns: 1fr; } }
+.result-item { padding: 20px; text-align: center; position: relative; }
+.result-item.highlight {
+  grid-column: 1 / -1;
+  background: linear-gradient(145deg, #121212, #1a1a1a); color: white;
+}
+.result-item.highlight .result-value {
+  color: var(--accent); text-shadow: 0 0 20px rgba(227,6,19,0.3);
+}
+.result-label {
+  font-family: 'Rajdhani', sans-serif; font-weight: 600; font-size: 0.8rem;
+  color: var(--text-secondary); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 8px;
+}
+.result-item.highlight .result-label { color: var(--text-light); }
+.result-value {
+  font-family: 'Orbitron', sans-serif; font-size: 1.6rem; font-weight: 700;
+  color: var(--text-primary); line-height: 1.2;
+}
+.result-unit {
+  font-family: 'Rajdhani', sans-serif; font-size: 0.85rem;
+  color: var(--text-secondary); margin-top: 4px;
+}
+.result-item.highlight .result-unit { color: var(--text-light); }
+.status-badge {
+  display: inline-flex; align-items: center; gap: 6px;
+  padding: 6px 14px; border-radius: 20px;
+  font-family: 'Rajdhani', sans-serif; font-weight: 600; font-size: 0.8rem;
+}
+.status-ok { background: rgba(5,150,105,0.1); color: var(--success); border: 1px solid rgba(5,150,105,0.3); }
+.status-warn { background: rgba(217,119,6,0.1); color: var(--warning); border: 1px solid rgba(217,119,6,0.3); }
+.status-danger { background: rgba(227,6,19,0.1); color: var(--accent); border: 1px solid rgba(227,6,19,0.3); }
+.table-container { overflow-x: auto; margin-top: 20px; border-radius: 16px; }
+.data-table { width: 100%; border-collapse: collapse; font-family: 'Space Grotesk', sans-serif; font-size: 0.9rem; }
+.data-table thead { background: linear-gradient(135deg, #121212, #3A3A3A); color: white; }
+.data-table th {
+  padding: 16px; text-align: left; font-family: 'Rajdhani', sans-serif;
+  font-weight: 600; font-size: 0.85rem; letter-spacing: 0.5px;
+  text-transform: uppercase; white-space: nowrap;
+}
+.data-table td { padding: 14px 16px; border-bottom: 1px solid rgba(0,0,0,0.05); color: var(--text-primary); }
+.data-table tbody tr { transition: background 0.2s ease; }
+.data-table tbody tr:hover { background: rgba(227,6,19,0.03); }
+.data-table tbody tr:nth-child(even) { background: rgba(0,0,0,0.015); }
+.data-table tbody tr:nth-child(even):hover { background: rgba(227,6,19,0.05); }
+.tabs { display: flex; gap: 8px; margin-bottom: 24px; flex-wrap: wrap; }
+.tab-btn {
+  padding: 12px 24px; font-family: 'Rajdhani', sans-serif; font-weight: 600;
+  font-size: 0.9rem; border: none; background: transparent;
+  color: var(--text-secondary); cursor: pointer; border-radius: 12px;
+  transition: all 0.3s ease; position: relative;
+}
+.tab-btn.active {
+  background: linear-gradient(145deg, #ffffff, #dadada);
+  box-shadow: 4px 4px 8px var(--shadow-dark), -4px -4px 8px var(--shadow-light);
+  color: var(--accent);
+}
+.tab-content { display: none; }
+.tab-content.active { display: block; animation: fadeIn 0.4s ease; }
+@keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+.info-box {
+  background: linear-gradient(135deg, rgba(227,6,19,0.05), rgba(227,6,19,0.02));
+  border-left: 4px solid var(--accent); padding: 16px 20px;
+  border-radius: 0 12px 12px 0; margin: 16px 0;
+  font-size: 0.9rem; color: var(--text-secondary);
+}
+.info-box strong { color: var(--text-primary); font-family: 'Rajdhani', sans-serif; }
+.formula-box {
+  background: var(--bg-dark); color: white; padding: 20px; border-radius: 16px;
+  font-family: 'Space Grotesk', monospace; font-size: 0.95rem; margin: 16px 0; overflow-x: auto;
+}
+.formula-box .formula { color: var(--accent); font-weight: 600; }
+.formula-box .variable { color: #60a5fa; }
+.speed-comparison { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-top: 20px; }
+@media (max-width: 640px) { .speed-comparison { grid-template-columns: 1fr; } }
+.speed-card { padding: 24px; text-align: center; }
+.speed-icon {
+  width: 60px; height: 60px; margin: 0 auto 16px;
+  background: linear-gradient(145deg, #ffffff, #dadada); border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  box-shadow: 4px 4px 8px var(--shadow-dark), -4px -4px 8px var(--shadow-light);
+}
+.speed-title { font-family: 'Orbitron', sans-serif; font-size: 0.9rem; font-weight: 600; margin-bottom: 8px; }
+.speed-value { font-family: 'Orbitron', sans-serif; font-size: 2rem; font-weight: 700; color: var(--accent); }
+.speed-unit { font-family: 'Rajdhani', sans-serif; color: var(--text-secondary); font-size: 0.9rem; }
+.full-width { grid-column: 1 / -1; }
+.footer { text-align: center; padding: 32px; margin-top: 32px; border-top: 2px solid rgba(0,0,0,0.05); }
+.footer-text { font-family: 'Rajdhani', sans-serif; color: var(--text-secondary); font-size: 0.85rem; letter-spacing: 1px; }
+.footer-brand { font-family: 'Orbitron', sans-serif; color: var(--accent); font-weight: 700; }
+::-webkit-scrollbar { width: 8px; height: 8px; }
+::-webkit-scrollbar-track { background: var(--bg-primary); }
+::-webkit-scrollbar-thumb { background: var(--shadow-dark); border-radius: 4px; }
+::-webkit-scrollbar-thumb:hover { background: var(--text-secondary); }
+.section-title {
+  font-family: 'Orbitron', sans-serif; font-size: 1.3rem; font-weight: 700;
+  color: var(--text-primary); margin-bottom: 8px; letter-spacing: 1px;
+}
+.section-desc { font-family: 'Rajdhani', sans-serif; color: var(--text-secondary); font-size: 0.95rem; margin-bottom: 24px; }
+.divider { height: 2px; background: linear-gradient(90deg, transparent, var(--shadow-dark), transparent); margin: 32px 0; }
+@keyframes countUp { from { opacity: 0; transform: scale(0.8); } to { opacity: 1; transform: scale(1); } }
+.animate-result { animation: countUp 0.5s cubic-bezier(0.34, 1.56, 0.64, 1); }
+</style>
+</head>
+<body>
+
+<header class="header">
+<div class="header-content">
+<div class="logo-section">
+<div class="logo-icon">
+<svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+<circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="4"/>
+<path d="M12 2v4M12 18v4M2 12h4M18 12h4"/>
+</svg>
+</div>
+<div class="logo-text">
+<h1>EDIM SOLUCIONES</h1>
+<span>Calculadora de Rodamientos ISO 281</span>
+</div>
+</div>
+<div class="header-badge">NORMA ISO 281:2007</div>
+</div>
+</header>
+
+<div class="container">
+<div class="main-grid">
+<!-- Left Column: Inputs -->
+<div class="card neu-flat">
+<div class="card-header">
+<div class="card-icon">
+<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+<path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/>
+</svg>
+</div>
+<div>
+<div class="card-title">Parametros de Entrada</div>
+<div class="card-subtitle">Datos de operacion y carga</div>
+</div>
+</div>
+
+<div class="form-group">
+<label class="form-label">Tipo de Rodamiento</label>
+<div class="bearing-types">
+<div class="bearing-type-card neu-convex active" onclick="selectBearingType('ball',this)" data-type="ball">
+<svg class="bearing-svg" viewBox="0 0 100 100">
+<circle cx="50" cy="50" r="45" fill="none" stroke="#121212" stroke-width="2"/>
+<circle cx="50" cy="50" r="35" fill="none" stroke="#121212" stroke-width="1.5"/>
+<circle cx="50" cy="50" r="15" fill="none" stroke="#E30613" stroke-width="2"/>
+<circle cx="50" cy="28" r="5" fill="#3A3A3A"/><circle cx="50" cy="72" r="5" fill="#3A3A3A"/>
+<circle cx="28" cy="50" r="5" fill="#3A3A3A"/><circle cx="72" cy="50" r="5" fill="#3A3A3A"/>
+<circle cx="34.5" cy="34.5" r="5" fill="#3A3A3A"/><circle cx="65.5" cy="65.5" r="5" fill="#3A3A3A"/>
+<circle cx="34.5" cy="65.5" r="5" fill="#3A3A3A"/><circle cx="65.5" cy="34.5" r="5" fill="#3A3A3A"/>
+</svg>
+<div class="bearing-type-name">BOLAS</div><div class="bearing-type-desc">p = 3</div>
+</div>
+<div class="bearing-type-card neu-convex" onclick="selectBearingType('roller',this)" data-type="roller">
+<svg class="bearing-svg" viewBox="0 0 100 100">
+<circle cx="50" cy="50" r="45" fill="none" stroke="#121212" stroke-width="2"/>
+<circle cx="50" cy="50" r="35" fill="none" stroke="#121212" stroke-width="1.5"/>
+<circle cx="50" cy="50" r="15" fill="none" stroke="#E30613" stroke-width="2"/>
+<rect x="46" y="20" width="8" height="14" rx="2" fill="#3A3A3A"/>
+<rect x="46" y="66" width="8" height="14" rx="2" fill="#3A3A3A"/>
+<rect x="20" y="46" width="14" height="8" rx="2" fill="#3A3A3A"/>
+<rect x="66" y="46" width="14" height="8" rx="2" fill="#3A3A3A"/>
+<rect x="28" y="28" width="10" height="10" rx="2" fill="#3A3A3A" transform="rotate(45 33 33)"/>
+<rect x="62" y="62" width="10" height="10" rx="2" fill="#3A3A3A" transform="rotate(45 67 67)"/>
+<rect x="28" y="62" width="10" height="10" rx="2" fill="#3A3A3A" transform="rotate(45 33 67)"/>
+<rect x="62" y="28" width="10" height="10" rx="2" fill="#3A3A3A" transform="rotate(45 67 33)"/>
+</svg>
+<div class="bearing-type-name">RODILLOS</div><div class="bearing-type-desc">p = 10/3</div>
+</div>
+<div class="bearing-type-card neu-convex" onclick="selectBearingType('needle',this)" data-type="needle">
+<svg class="bearing-svg" viewBox="0 0 100 100">
+<ellipse cx="50" cy="50" rx="45" ry="25" fill="none" stroke="#121212" stroke-width="2"/>
+<ellipse cx="50" cy="50" rx="35" ry="18" fill="none" stroke="#121212" stroke-width="1.5"/>
+<ellipse cx="50" cy="50" rx="15" ry="8" fill="none" stroke="#E30613" stroke-width="2"/>
+<rect x="48" y="28" width="4" height="10" fill="#3A3A3A"/>
+<rect x="48" y="62" width="4" height="10" fill="#3A3A3A"/>
+<rect x="28" y="48" width="10" height="4" fill="#3A3A3A"/>
+<rect x="62" y="48" width="10" height="4" fill="#3A3A3A"/>
+<rect x="35" y="35" width="6" height="6" fill="#3A3A3A"/>
+<rect x="59" y="59" width="6" height="6" fill="#3A3A3A"/>
+<rect x="35" y="59" width="6" height="6" fill="#3A3A3A"/>
+<rect x="59" y="35" width="6" height="6" fill="#3A3A3A"/>
+</svg>
+<div class="bearing-type-name">AGUJAS</div><div class="bearing-type-desc">p = 10/3</div>
+</div>
+</div>
+</div>
+
+<div class="form-row">
+<div class="form-group">
+<label class="form-label">Carga Radial Fr</label>
+<div class="input-group"><input type="number" id="fr" class="neu-input input-with-unit" placeholder="0" step="0.1"><span class="input-unit">N</span></div>
+</div>
+<div class="form-group">
+<label class="form-label">Carga Axial Fa</label>
+<div class="input-group"><input type="number" id="fa" class="neu-input input-with-unit" placeholder="0" step="0.1"><span class="input-unit">N</span></div>
+</div>
+</div>
+
+<div class="form-row">
+<div class="form-group">
+<label class="form-label">Carga Dinamica C</label>
+<div class="input-group"><input type="number" id="c" class="neu-input input-with-unit" placeholder="0" step="0.1"><span class="input-unit">N</span></div>
+</div>
+<div class="form-group">
+<label class="form-label">Carga Estatica C0</label>
+<div class="input-group"><input type="number" id="c0" class="neu-input input-with-unit" placeholder="0" step="0.1"><span class="input-unit">N</span></div>
+</div>
+</div>
+
+<div class="form-row">
+<div class="form-group">
+<label class="form-label">Velocidad n</label>
+<div class="input-group"><input type="number" id="n" class="neu-input input-with-unit" placeholder="0" step="1"><span class="input-unit">rpm</span></div>
+</div>
+<div class="form-group">
+<label class="form-label">Factor e (Fa/Fr limite)</label>
+<div class="input-group"><input type="number" id="e" class="neu-input input-with-unit" placeholder="0.22" value="0.22" step="0.01"></div>
+</div>
+</div>
+
+<div class="form-row">
+<div class="form-group">
+<label class="form-label">Factor X (Fr >= e)</label>
+<div class="input-group"><input type="number" id="x1" class="neu-input input-with-unit" placeholder="0.56" value="0.56" step="0.01"></div>
+</div>
+<div class="form-group">
+<label class="form-label">Factor Y (Fr >= e)</label>
+<div class="input-group"><input type="number" id="y1" class="neu-input input-with-unit" placeholder="1.8" value="1.8" step="0.01"></div>
+</div>
+</div>
+
+<div class="form-row">
+<div class="form-group">
+<label class="form-label">Factor X (Fr < e)</label>
+<div class="input-group"><input type="number" id="x2" class="neu-input input-with-unit" placeholder="1" value="1" step="0.01"></div>
+</div>
+<div class="form-group">
+<label class="form-label">Factor Y (Fr < e)</label>
+<div class="input-group"><input type="number" id="y2" class="neu-input input-with-unit" placeholder="0" value="0" step="0.01"></div>
+</div>
+</div>
+
+<div class="divider"></div>
+<div class="section-title">Factores de Ajuste</div>
+<div class="card-subtitle" style="margin-bottom:16px">Para vida util ajustada Lna</div>
+
+<div class="form-row">
+<div class="form-group">
+<label class="form-label">Confiabilidad (%)</label>
+<select id="reliability" class="neu-input neu-select">
+<option value="1.0">90% (L10)</option>
+<option value="0.62">95% (L5)</option>
+<option value="0.53">96% (L4)</option>
+<option value="0.44">97% (L3)</option>
+<option value="0.33">98% (L2)</option>
+<option value="0.21">99% (L1)</option>
+</select>
+</div>
+<div class="form-group">
+<label class="form-label">Factor aISO</label>
+<div class="input-group"><input type="number" id="aiso" class="neu-input input-with-unit" placeholder="1" value="1" step="0.1"></div>
+</div>
+</div>
+
+<div class="form-row">
+<div class="form-group">
+<label class="form-label">Viscosidad base v1 (mm2/s)</label>
+<div class="input-group"><input type="number" id="v1" class="neu-input input-with-unit" placeholder="12" value="12" step="0.1"></div>
+</div>
+<div class="form-group">
+<label class="form-label">Viscosidad operacion v (mm2/s)</label>
+<div class="input-group"><input type="number" id="v" class="neu-input input-with-unit" placeholder="20" value="20" step="0.1"></div>
+</div>
+</div>
+
+<div class="form-row">
+<div class="form-group">
+<label class="form-label">Factor de contaminacion ec</label>
+<div class="input-group"><input type="number" id="ec" class="neu-input input-with-unit" placeholder="0.5" value="0.5" step="0.01" min="0" max="1"></div>
+</div>
+<div class="form-group">
+<label class="form-label">Diametro medio dm (mm)</label>
+<div class="input-group"><input type="number" id="dm" class="neu-input input-with-unit" placeholder="50" value="50" step="0.1"></div>
+</div>
+</div>
+
+<button class="neu-btn neu-btn-primary" style="width:100%;margin-top:8px;justify-content:center" onclick="calculateAll()">
+<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+<polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/>
+</svg>
+CALCULAR TODO
+</button>
+</div>
+
+<!-- Right Column: Results -->
+<div class="card neu-flat">
+<div class="card-header">
+<div class="card-icon">
+<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+<path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+<polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/>
+<line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/>
+</svg>
+</div>
+<div>
+<div class="card-title">Resultados</div>
+<div class="card-subtitle">Calculos segun ISO 281</div>
+</div>
+</div>
+
+<div class="formula-box">
+<span class="variable">L10</span> = (<span class="variable">C</span> / <span class="variable">P</span>)^<span class="variable">p</span> |
+<span class="variable">L10h</span> = (10^6 * <span class="variable">L10</span>) / (60 * <span class="variable">n</span>) |
+<span class="variable">P</span> = <span class="variable">X</span> * <span class="variable">Fr</span> + <span class="variable">Y</span> * <span class="variable">Fa</span>
+</div>
+
+<div class="result-grid">
+<div class="result-item neu-pressed">
+<div class="result-label">Carga Equivalente P</div>
+<div class="result-value" id="resP">--</div>
+<div class="result-unit">N</div>
+</div>
+<div class="result-item neu-pressed">
+<div class="result-label">Carga Estatica P0</div>
+<div class="result-value" id="resP0">--</div>
+<div class="result-unit">N</div>
+</div>
+<div class="result-item neu-pressed">
+<div class="result-label">L10 (millones rev)</div>
+<div class="result-value" id="resL10">--</div>
+<div class="result-unit">x10^6 rev</div>
+</div>
+<div class="result-item neu-pressed">
+<div class="result-label">L10h (horas)</div>
+<div class="result-value" id="resL10h">--</div>
+<div class="result-unit">horas</div>
+</div>
+<div class="result-item neu-pressed">
+<div class="result-label">Factor a1</div>
+<div class="result-value" id="resa1">--</div>
+<div class="result-unit">adimensional</div>
+</div>
+<div class="result-item neu-pressed">
+<div class="result-label">Factor aISO</div>
+<div class="result-value" id="resaiso">--</div>
+<div class="result-unit">adimensional</div>
+</div>
+<div class="result-item highlight neu-flat">
+<div class="result-label">Vida Util Ajustada Lna</div>
+<div class="result-value" id="resLna">--</div>
+<div class="result-unit">millones de revoluciones</div>
+</div>
+<div class="result-item neu-pressed">
+<div class="result-label">Verificacion Estatica</div>
+<div id="resStatic">--</div>
+</div>
+</div>
+
+<div class="info-box" style="margin-top:20px">
+<strong>Nota:</strong> La vida util nominal L10 corresponde al 90% de confiabilidad. Para otras confiabilidades, utilice el factor a1. El factor aISO considera lubricacion, contaminacion y condiciones operativas.
+</div>
+</div>
+</div>
+
+<!-- Bearing Selection Table -->
+<div class="card neu-flat full-width">
+<div class="card-header">
+<div class="card-icon">
+<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+<rect x="3" y="3" width="18" height="18" rx="2" ry="2"/>
+<line x1="3" y1="9" x2="21" y2="9"/><line x1="9" y1="21" x2="9" y2="9"/>
+</svg>
+</div>
+<div>
+<div class="card-title">Tabla de Seleccion</div>
+<div class="card-subtitle">Rodamientos rigidos de bolas - Series 6000, 6200, 6300, 6400</div>
+</div>
+</div>
+
+<div class="tabs">
+<button class="tab-btn active" onclick="showTab('series60',this)">Serie 6000</button>
+<button class="tab-btn" onclick="showTab('series62',this)">Serie 6200</button>
+<button class="tab-btn" onclick="showTab('series63',this)">Serie 6300</button>
+<button class="tab-btn" onclick="showTab('series64',this)">Serie 6400</button>
+</div>
+
+<div id="series60" class="tab-content active">
+<div class="table-container neu-pressed">
+<table class="data-table">
+<thead><tr><th>Designacion</th><th>d (mm)</th><th>D (mm)</th><th>B (mm)</th><th>C (kN)</th><th>C0 (kN)</th><th>Limite Grasa (rpm)</th><th>Limite Aceite (rpm)</th><th>Accion</th></tr></thead>
+<tbody>
+<tr><td>6000</td><td>10</td><td>26</td><td>8</td><td>4.58</td><td>1.97</td><td>28000</td><td>34000</td><td><button class="neu-btn" style="padding:6px 14px;font-size:0.8rem" onclick="loadBearing(4580,1970,28000,34000,18)">Cargar</button></td></tr>
+<tr><td>6001</td><td>12</td><td>28</td><td>8</td><td>5.10</td><td>2.36</td><td>26000</td><td>32000</td><td><button class="neu-btn" style="padding:6px 14px;font-size:0.8rem" onclick="loadBearing(5100,2360,26000,32000,20)">Cargar</button></td></tr>
+<tr><td>6002</td><td>15</td><td>32</td><td>9</td><td>5.58</td><td>2.85</td><td>24000</td><td>28000</td><td><button class="neu-btn" style="padding:6px 14px;font-size:0.8rem" onclick="loadBearing(5580,2850,24000,28000,23.5)">Cargar</button></td></tr>
+<tr><td>6003</td><td>17</td><td>35</td><td>10</td><td>6.00</td><td>3.25</td><td>22000</td><td>26000</td><td><button class="neu-btn" style="padding:6px 14px;font-size:0.8rem" onclick="loadBearing(6000,3250,22000,26000,26)">Cargar</button></td></tr>
+<tr><td>6004</td><td>20</td><td>42</td><td>12</td><td>9.38</td><td>5.00</td><td>19000</td><td>24000</td><td><button class="neu-btn" style="padding:6px 14px;font-size:0.8rem" onclick="loadBearing(9380,5000,19000,24000,31)">Cargar</button></td></tr>
+<tr><td>6005</td><td>25</td><td>47</td><td>12</td><td>10.1</td><td>5.85</td><td>17000</td><td>20000</td><td><button class="neu-btn" style="padding:6px 14px;font-size:0.8rem" onclick="loadBearing(10100,5850,17000,20000,36)">Cargar</button></td></tr>
+<tr><td>6006</td><td>30</td><td>55</td><td>13</td><td>13.2</td><td>8.30</td><td>14000</td><td>17000</td><td><button class="neu-btn" style="padding:6px 14px;font-size:0.8rem" onclick="loadBearing(13200,8300,14000,17000,42.5)">Cargar</button></td></tr>
+<tr><td>6007</td><td>35</td><td>62</td><td>14</td><td>16.0</td><td>10.3</td><td>12000</td><td>15000</td><td><button class="neu-btn" style="padding:6px 14px;font-size:0.8rem" onclick="loadBearing(16000,10300,12000,15000,48.5)">Cargar</button></td></tr>
+<tr><td>6008</td><td>40</td><td>68</td><td>15</td><td>16.8</td><td>11.5</td><td>11000</td><td>13000</td><td><button class="neu-btn" style="padding:6px 14px;font-size:0.8rem" onclick="loadBearing(16800,11500,11000,13000,54)">Cargar</button></td></tr>
+<tr><td>6009</td><td>45</td><td>75</td><td>16</td><td>21.0</td><td>14.8</td><td>10000</td><td>12000</td><td><button class="neu-btn" style="padding:6px 14px;font-size:0.8rem" onclick="loadBearing(21000,14800,10000,12000,60)">Cargar</button></td></tr>
+<tr><td>6010</td><td>50</td><td>80</td><td>16</td><td>22.0</td><td>16.3</td><td>9500</td><td>11000</td><td><button class="neu-btn" style="padding:6px 14px;font-size:0.8rem" onclick="loadBearing(22000,16300,9500,11000,65)">Cargar</button></td></tr>
+</tbody>
+</table>
+</div>
+</div>
+
+<div id="series62" class="tab-content">
+<div class="table-container neu-pressed">
+<table class="data-table">
+<thead><tr><th>Designacion</th><th>d (mm)</th><th>D (mm)</th><th>B (mm)</th><th>C (kN)</th><th>C0 (kN)</th><th>Limite Grasa (rpm)</th><th>Limite Aceite (rpm)</th><th>Accion</th></tr></thead>
+<tbody>
+<tr><td>6200</td><td>10</td><td>30</td><td>9</td><td>5.07</td><td>2.32</td><td>26000</td><td>32000</td><td><button class="neu-btn" style="padding:6px 14px;font-size:0.8rem" onclick="loadBearing(5070,2320,26000,32000,20)">Cargar</button></td></tr>
+<tr><td>6201</td><td>12</td><td>32</td><td>10</td><td>6.89</td><td>3.10</td><td>24000</td><td>30000</td><td><button class="neu-btn" style="padding:6px 14px;font-size:0.8rem" onclick="loadBearing(6890,3100,24000,30000,22)">Cargar</button></td></tr>
+<tr><td>6202</td><td>15</td><td>35</td><td>11</td><td>7.80</td><td>3.75</td><td>22000</td><td>28000</td><td><button class="neu-btn" style="padding:6px 14px;font-size:0.8rem" onclick="loadBearing(7800,3750,22000,28000,25)">Cargar</button></td></tr>
+<tr><td>6203</td><td>17</td><td>40</td><td>12</td><td>9.58</td><td>4.78</td><td>20000</td><td>24000</td><td><button class="neu-btn" style="padding:6px 14px;font-size:0.8rem" onclick="loadBearing(9580,4780,20000,24000,28.5)">Cargar</button></td></tr>
+<tr><td>6204</td><td>20</td><td>47</td><td>14</td><td>12.8</td><td>6.60</td><td>18000</td><td>22000</td><td><button class="neu-btn" style="padding:6px 14px;font-size:0.8rem" onclick="loadBearing(12800,6600,18000,22000,33.5)">Cargar</button></td></tr>
+<tr><td>6205</td><td>25</td><td>52</td><td>15</td><td>14.0</td><td>7.85</td><td>16000</td><td>19000</td><td><button class="neu-btn" style="padding:6px 14px;font-size:0.8rem" onclick="loadBearing(14000,7850,16000,19000,38.5)">Cargar</button></td></tr>
+<tr><td>6206</td><td>30</td><td>62</td><td>16</td><td>19.5</td><td>11.3</td><td>13000</td><td>16000</td><td><button class="neu-btn" style="padding:6px 14px;font-size:0.8rem" onclick="loadBearing(19500,11300,13000,16000,46)">Cargar</button></td></tr>
+<tr><td>6207</td><td>35</td><td>72</td><td>17</td><td>25.5</td><td>15.3</td><td>11000</td><td>14000</td><td><button class="neu-btn" style="padding:6px 14px;font-size:0.8rem" onclick="loadBearing(25500,15300,11000,14000,53.5)">Cargar</button></td></tr>
+<tr><td>6208</td><td>40</td><td>80</td><td>18</td><td>30.7</td><td>19.0</td><td>10000</td><td>12000</td><td><button class="neu-btn" style="padding:6px 14px;font-size:0.8rem" onclick="loadBearing(30700,19000,10000,12000,60)">Cargar</button></td></tr>
+<tr><td>6209</td><td>45</td><td>85</td><td>19</td><td>32.5</td><td>21.6</td><td>9000</td><td>11000</td><td><button class="neu-btn" style="padding:6px 14px;font-size:0.8rem" onclick="loadBearing(32500,21600,9000,11000,65)">Cargar</button></td></tr>
+<tr><td>6210</td><td>50</td><td>90</td><td>20</td><td>35.0</td><td>23.2</td><td>8500</td><td>10000</td><td><button class="neu-btn" style="padding:6px 14px;font-size:0.8rem" onclick="loadBearing(35000,23200,8500,10000,70)">Cargar</button></td></tr>
+</tbody>
+</table>
+</div>
+</div>
+
+<div id="series63" class="tab-content">
+<div class="table-container neu-pressed">
+<table class="data-table">
+<thead><tr><th>Designacion</th><th>d (mm)</th><th>D (mm)</th><th>B (mm)</th><th>C (kN)</th><th>C0 (kN)</th><th>Limite Grasa (rpm)</th><th>Limite Aceite (rpm)</th><th>Accion</th></tr></thead>
+<tbody>
+<tr><td>6300</td><td>10</td><td>35</td><td>11</td><td>8.20</td><td>3.50</td><td>22000</td><td>28000</td><td><button class="neu-btn" style="padding:6px 14px;font-size:0.8rem" onclick="loadBearing(8200,3500,22000,28000,22.5)">Cargar</button></td></tr>
+<tr><td>6301</td><td>12</td><td>37</td><td>12</td><td>9.70</td><td>4.20</td><td>20000</td><td>26000</td><td><button class="neu-btn" style="padding:6px 14px;font-size:0.8rem" onclick="loadBearing(9700,4200,20000,26000,24.5)">Cargar</button></td></tr>
+<tr><td>6302</td><td>15</td><td>42</td><td>13</td><td>11.4</td><td>5.40</td><td>18000</td><td>22000</td><td><button class="neu-btn" style="padding:6px 14px;font-size:0.8rem" onclick="loadBearing(11400,5400,18000,22000,28.5)">Cargar</button></td></tr>
+<tr><td>6303</td><td>17</td><td>47</td><td>14</td><td>13.5</td><td>6.55</td><td>17000</td><td>20000</td><td><button class="neu-btn" style="padding:6px 14px;font-size:0.8rem" onclick="loadBearing(13500,6550,17000,20000,32)">Cargar</button></td></tr>
+<tr><td>6304</td><td>20</td><td>52</td><td>15</td><td>15.9</td><td>7.80</td><td>15000</td><td>18000</td><td><button class="neu-btn" style="padding:6px 14px;font-size:0.8rem" onclick="loadBearing(15900,7800,15000,18000,36)">Cargar</button></td></tr>
+<tr><td>6305</td><td>25</td><td>62</td><td>17</td><td>22.5</td><td>11.6</td><td>13000</td><td>15000</td><td><button class="neu-btn" style="padding:6px 14px;font-size:0.8rem" onclick="loadBearing(22500,11600,13000,15000,43.5)">Cargar</button></td></tr>
+<tr><td>6306</td><td>30</td><td>72</td><td>19</td><td>28.1</td><td>16.0</td><td>11000</td><td>13000</td><td><button class="neu-btn" style="padding:6px 14px;font-size:0.8rem" onclick="loadBearing(28100,16000,11000,13000,51)">Cargar</button></td></tr>
+<tr><td>6307</td><td>35</td><td>80</td><td>21</td><td>33.2</td><td>19.0</td><td>9500</td><td>12000</td><td><button class="neu-btn" style="padding:6px 14px;font-size:0.8rem" onclick="loadBearing(33200,19000,9500,12000,57.5)">Cargar</button></td></tr>
+<tr><td>6308</td><td>40</td><td>90</td><td>23</td><td>40.7</td><td>24.0</td><td>8500</td><td>10000</td><td><button class="neu-btn" style="padding:6px 14px;font-size:0.8rem" onclick="loadBearing(40700,24000,8500,10000,65)">Cargar</button></td></tr>
+<tr><td>6309</td><td>45</td><td>100</td><td>25</td><td>52.7</td><td>32.0</td><td>7500</td><td>9000</td><td><button class="neu-btn" style="padding:6px 14px;font-size:0.8rem" onclick="loadBearing(52700,32000,7500,9000,72.5)">Cargar</button></td></tr>
+<tr><td>6310</td><td>50</td><td>110</td><td>27</td><td>61.8</td><td>38.0</td><td>7000</td><td>8500</td><td><button class="neu-btn" style="padding:6px 14px;font-size:0.8rem" onclick="loadBearing(61800,38000,7000,8500,80)">Cargar</button></td></tr>
+</tbody>
+</table>
+</div>
+</div>
+
+<div id="series64" class="tab-content">
+<div class="table-container neu-pressed">
+<table class="data-table">
+<thead><tr><th>Designacion</th><th>d (mm)</th><th>D (mm)</th><th>B (mm)</th><th>C (kN)</th><th>C0 (kN)</th><th>Limite Grasa (rpm)</th><th>Limite Aceite (rpm)</th><th>Accion</th></tr></thead>
+<tbody>
+<tr><td>6403</td><td>17</td><td>62</td><td>17</td><td>22.7</td><td>10.8</td><td>14000</td><td>17000</td><td><button class="neu-btn" style="padding:6px 14px;font-size:0.8rem" onclick="loadBearing(22700,10800,14000,17000,39.5)">Cargar</button></td></tr>
+<tr><td>6404</td><td>20</td><td>72</td><td>19</td><td>31.0</td><td>15.0</td><td>12000</td><td>15000</td><td><button class="neu-btn" style="padding:6px 14px;font-size:0.8rem" onclick="loadBearing(31000,15000,12000,15000,46)">Cargar</button></td></tr>
+<tr><td>6405</td><td>25</td><td>80</td><td>21</td><td>36.1</td><td>19.6</td><td>11000</td><td>13000</td><td><button class="neu-btn" style="padding:6px 14px;font-size:0.8rem" onclick="loadBearing(36100,19600,11000,13000,52.5)">Cargar</button></td></tr>
+<tr><td>6406</td><td>30</td><td>90</td><td>23</td><td>43.4</td><td>23.6</td><td>9500</td><td>12000</td><td><button class="neu-btn" style="padding:6px 14px;font-size:0.8rem" onclick="loadBearing(43400,23600,9500,12000,60)">Cargar</button></td></tr>
+<tr><td>6407</td><td>35</td><td>100</td><td>25</td><td>55.0</td><td>31.0</td><td>8500</td><td>10000</td><td><button class="neu-btn" style="padding:6px 14px;font-size:0.8rem" onclick="loadBearing(55000,31000,8500,10000,67.5)">Cargar</button></td></tr>
+<tr><td>6408</td><td>40</td><td>110</td><td>27</td><td>63.7</td><td>36.5</td><td>7500</td><td>9000</td><td><button class="neu-btn" style="padding:6px 14px;font-size:0.8rem" onclick="loadBearing(63700,36500,7500,9000,75)">Cargar</button></td></tr>
+<tr><td>6409</td><td>45</td><td>120</td><td>29</td><td>76.1</td><td>45.0</td><td>6700</td><td>8000</td><td><button class="neu-btn" style="padding:6px 14px;font-size:0.8rem" onclick="loadBearing(76100,45000,6700,8000,82.5)">Cargar</button></td></tr>
+<tr><td>6410</td><td>50</td><td>130</td><td>31</td><td>87.1</td><td>52.0</td><td>6000</td><td>7500</td><td><button class="neu-btn" style="padding:6px 14px;font-size:0.8rem" onclick="loadBearing(87100,52000,6000,7500,90)">Cargar</button></td></tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+
+<!-- Speed Limit Section -->
+<div class="card neu-flat full-width">
+<div class="card-header">
+<div class="card-icon">
+<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+<polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/>
+</svg>
+</div>
+<div>
+<div class="card-title">Velocidad Limite</div>
+<div class="card-subtitle">Comparacion Grasa vs Aceite segun condiciones de operacion</div>
+</div>
+</div>
+
+<div class="form-row" style="max-width:600px">
+<div class="form-group">
+<label class="form-label">Velocidad de operacion n (rpm)</label>
+<div class="input-group"><input type="number" id="speedN" class="neu-input input-with-unit" placeholder="1500" value="1500" step="1"><span class="input-unit">rpm</span></div>
+</div>
+<div class="form-group">
+<label class="form-label">Limite Grasa (tabla)</label>
+<div class="input-group"><input type="number" id="limitGrease" class="neu-input input-with-unit" placeholder="0" step="1"><span class="input-unit">rpm</span></div>
+</div>
+</div>
+
+<div class="form-row" style="max-width:600px">
+<div class="form-group">
+<label class="form-label">Limite Aceite (tabla)</label>
+<div class="input-group"><input type="number" id="limitOil" class="neu-input input-with-unit" placeholder="0" step="1"><span class="input-unit">rpm</span></div>
+</div>
+<div class="form-group" style="display:flex;align-items:flex-end">
+<button class="neu-btn neu-btn-primary" style="width:100%;justify-content:center" onclick="checkSpeedLimits()">
+<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+VERIFICAR
+</button>
+</div>
+</div>
+
+<div class="speed-comparison">
+<div class="speed-card neu-pressed">
+<div class="speed-icon">
+<svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#3A3A3A" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+<path d="M12 2.69l5.66 5.66a8 8 0 1 1-11.31 0z"/>
+</svg>
+</div>
+<div class="speed-title">LUBRICACION CON GRASA</div>
+<div class="speed-value" id="resGrease">--</div>
+<div class="speed-unit">rpm limite</div>
+<div id="statusGrease" style="margin-top:12px"></div>
+</div>
+<div class="speed-card neu-pressed">
+<div class="speed-icon">
+<svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#3A3A3A" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+<path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+</svg>
+</div>
+<div class="speed-title">LUBRICACION CON ACEITE</div>
+<div class="speed-value" id="resOil">--</div>
+<div class="speed-unit">rpm limite</div>
+<div id="statusOil" style="margin-top:12px"></div>
+</div>
+</div>
+
+<div class="info-box" style="margin-top:20px">
+<strong>Referencia:</strong> Los limites de velocidad indicados corresponden a valores de catalogo para rodamientos rigidos de bolas con juego normal (C3). Para lubricacion con grasa, se recomienda utilizar grasas de alta calidad con espesante de poliurea o litio. La lubricacion con aceite permite velocidades superiores debido a menor arrastre viscoso.
+</div>
+</div>
+
+<!-- Footer -->
+<div class="footer">
+<div class="footer-text">
+<span class="footer-brand">EDIM SOLUCIONES</span> | Calculadora de Rodamientos conforme ISO 281:2007 / ISO 76:2006
+</div>
+<div class="footer-text" style="margin-top:8px;opacity:0.7">
+Desarrollado para ingenieria de confiabilidad y mantenimiento predictivo
+</div>
+</div>
+</div>
+
+<script>
+let bearingType = 'ball';
+let p = 3;
+
+function selectBearingType(type, el) {
+  bearingType = type;
+  p = (type === 'ball') ? 3 : 10/3;
+  document.querySelectorAll('.bearing-type-card').forEach(c => c.classList.remove('active'));
+  el.classList.add('active');
+}
+
+function showTab(tabId, btn) {
+  document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById(tabId).classList.add('active');
+  btn.classList.add('active');
+}
+
+function loadBearing(c, c0, greaseLimit, oilLimit, dm) {
+  document.getElementById('c').value = c;
+  document.getElementById('c0').value = c0;
+  document.getElementById('limitGrease').value = greaseLimit;
+  document.getElementById('limitOil').value = oilLimit;
+  document.getElementById('dm').value = dm;
+  selectBearingType('ball', document.querySelector('[data-type="ball"]'));
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function formatNumber(num, decimals) {
+  if (!isFinite(num) || isNaN(num)) return '--';
+  if (num >= 1e9) return (num / 1e9).toFixed(decimals) + ' G';
+  if (num >= 1e6) return (num / 1e6).toFixed(decimals) + ' M';
+  if (num >= 1e3) return (num / 1e3).toFixed(decimals) + ' k';
+  return num.toFixed(decimals);
+}
+
+function calculateAll() {
+  const fr = parseFloat(document.getElementById('fr').value) || 0;
+  const fa = parseFloat(document.getElementById('fa').value) || 0;
+  const c = parseFloat(document.getElementById('c').value) || 0;
+  const c0 = parseFloat(document.getElementById('c0').value) || 0;
+  const n = parseFloat(document.getElementById('n').value) || 0;
+  const e = parseFloat(document.getElementById('e').value) || 0.22;
+  const x1 = parseFloat(document.getElementById('x1').value) || 0.56;
+  const y1 = parseFloat(document.getElementById('y1').value) || 1.8;
+  const x2 = parseFloat(document.getElementById('x2').value) || 1;
+  const y2 = parseFloat(document.getElementById('y2').value) || 0;
+  const a1 = parseFloat(document.getElementById('reliability').value) || 1.0;
+  const aisoInput = parseFloat(document.getElementById('aiso').value) || 1;
+  const v1 = parseFloat(document.getElementById('v1').value) || 12;
+  const v = parseFloat(document.getElementById('v').value) || 20;
+  const ec = parseFloat(document.getElementById('ec').value) || 0.5;
+  const dm = parseFloat(document.getElementById('dm').value) || 50;
+
+  // Carga dinamica equivalente P
+  let X, Y;
+  if (fr === 0 && fa === 0) {
+    X = 1; Y = 0;
+  } else if (fa / fr > e) {
+    X = x1; Y = y1;
+  } else {
+    X = x2; Y = y2;
+  }
+  const P = X * fr + Y * fa;
+
+  // Carga estatica equivalente P0
+  const X0 = 0.6;
+  const Y0 = 0.5;
+  const P0 = X0 * fr + Y0 * fa;
+
+  // L10
+  let L10 = 0;
+  if (P > 0 && c > 0) {
+    L10 = Math.pow(c / P, p);
+  }
+
+  // L10h
+  let L10h = 0;
+  if (L10 > 0 && n > 0) {
+    L10h = (1e6 * L10) / (60 * n);
+  }
+
+  // Factor aISO calculado (metodo simplificado ISO 281)
+  const kappa = v / v1;
+  let aisoCalc = 1;
+  if (kappa >= 4) aisoCalc = 2.5;
+  else if (kappa >= 3) aisoCalc = 2.0;
+  else if (kappa >= 2) aisoCalc = 1.5;
+  else if (kappa >= 1) aisoCalc = 1.0;
+  else if (kappa >= 0.5) aisoCalc = 0.6;
+  else aisoCalc = 0.3;
+
+  // Ajuste por contaminacion
+  const cu = ec * c0;
+  const pcu = P / cu;
+  let etaC = 1;
+  if (pcu <= 0.05) etaC = 1.0;
+  else if (pcu <= 0.1) etaC = 0.8;
+  else if (pcu <= 0.2) etaC = 0.6;
+  else if (pcu <= 0.5) etaC = 0.4;
+  else etaC = 0.2;
+
+  const aisoFinal = aisoInput * aisoCalc * etaC;
+
+  // Lna
+  const Lna = a1 * aisoFinal * L10;
+
+  // Verificacion estatica
+  let staticStatus = '';
+  if (c0 > 0 && P0 > 0) {
+    const s0 = c0 / P0;
+    if (s0 >= 2) {
+      staticStatus = '<span class="status-badge status-ok"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg> SEGURO (S0=' + s0.toFixed(2) + ')</span>';
+    } else if (s0 >= 1) {
+      staticStatus = '<span class="status-badge status-warn"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg> REVISAR (S0=' + s0.toFixed(2) + ')</span>';
+    } else {
+      staticStatus = '<span class="status-badge status-danger"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg> NO SEGURO (S0=' + s0.toFixed(2) + ')</span>';
+    }
+  } else {
+    staticStatus = '<span class="status-badge status-warn">Datos incompletos</span>';
+  }
+
+  // Update DOM
+  document.getElementById('resP').textContent = formatNumber(P, 2);
+  document.getElementById('resP0').textContent = formatNumber(P0, 2);
+  document.getElementById('resL10').textContent = formatNumber(L10, 4);
+  document.getElementById('resL10h').textContent = formatNumber(L10h, 2);
+  document.getElementById('resa1').textContent = a1.toFixed(2);
+  document.getElementById('resaiso').textContent = aisoFinal.toFixed(3);
+  document.getElementById('resLna').textContent = formatNumber(Lna, 4);
+  document.getElementById('resStatic').innerHTML = staticStatus;
+
+  // Animate
+  document.querySelectorAll('.result-value').forEach(el => {
+    el.classList.remove('animate-result');
+    void el.offsetWidth;
+    el.classList.add('animate-result');
+  });
+}
+
+function checkSpeedLimits() {
+  const n = parseFloat(document.getElementById('speedN').value) || 0;
+  const grease = parseFloat(document.getElementById('limitGrease').value) || 0;
+  const oil = parseFloat(document.getElementById('limitOil').value) || 0;
+
+  document.getElementById('resGrease').textContent = grease > 0 ? grease.toLocaleString() : '--';
+  document.getElementById('resOil').textContent = oil > 0 ? oil.toLocaleString() : '--';
+
+  if (grease > 0) {
+    if (n <= grease) {
+      document.getElementById('statusGrease').innerHTML = '<span class="status-badge status-ok"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg> ACEPTABLE</span>';
+    } else {
+      document.getElementById('statusGrease').innerHTML = '<span class="status-badge status-danger"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg> EXCEDIDO (' + ((n/grease)*100).toFixed(1) + '%)</span>';
+    }
+  }
+
+  if (oil > 0) {
+    if (n <= oil) {
+      document.getElementById('statusOil').innerHTML = '<span class="status-badge status-ok"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg> ACEPTABLE</span>';
+    } else {
+      document.getElementById('statusOil').innerHTML = '<span class="status-badge status-danger"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg> EXCEDIDO (' + ((n/oil)*100).toFixed(1) + '%)</span>';
+    }
+  }
+}
+
+// Auto-calculate on Enter
+document.querySelectorAll('.neu-input').forEach(input => {
+  input.addEventListener('keypress', function(e) {
+    if (e.key === 'Enter') calculateAll();
+  });
+});
+</script>
+</body>
+</html>

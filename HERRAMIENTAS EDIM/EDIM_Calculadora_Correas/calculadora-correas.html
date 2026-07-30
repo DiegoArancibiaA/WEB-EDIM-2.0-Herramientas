@@ -1,0 +1,1073 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EDIM SOLUCIONES | Calculadora de Transmisiones por Correa</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;800;900&family=Rajdhani:wght@300;400;500;600;700&family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --white: #FFFFFF;
+            --black: #121212;
+            --gray-light: #F2F2F2;
+            --gray-mid: #D9D9D9;
+            --gray-dark: #3A3A3A;
+            --red-edim: #E30613;
+            --shadow-light: #ffffff;
+            --shadow-dark: #b8b9be;
+            --shadow-dark-deep: #9a9b9f;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Space Grotesk', sans-serif;
+            background: var(--gray-light);
+            color: var(--black);
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+        .neu-flat {
+            background: var(--gray-light);
+            box-shadow: 8px 8px 16px var(--shadow-dark), -8px -8px 16px var(--shadow-light);
+            border-radius: 20px;
+            border: 1px solid rgba(255,255,255,0.2);
+        }
+        .neu-pressed {
+            background: var(--gray-light);
+            box-shadow: inset 6px 6px 12px var(--shadow-dark), inset -6px -6px 12px var(--shadow-light);
+            border-radius: 16px;
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+        .neu-btn {
+            background: var(--gray-light);
+            box-shadow: 6px 6px 12px var(--shadow-dark), -6px -6px 12px var(--shadow-light);
+            border-radius: 14px;
+            border: none;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            font-family: 'Rajdhani', sans-serif;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            color: var(--gray-dark);
+        }
+        .neu-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 8px 8px 20px var(--shadow-dark), -8px -8px 20px var(--shadow-light);
+            color: var(--red-edim);
+        }
+        .neu-btn:active {
+            transform: translateY(0);
+            box-shadow: inset 4px 4px 8px var(--shadow-dark), inset -4px -4px 8px var(--shadow-light);
+        }
+        .neu-btn.active {
+            box-shadow: inset 4px 4px 8px var(--shadow-dark), inset -4px -4px 8px var(--shadow-light);
+            color: var(--red-edim);
+            border: 1px solid var(--red-edim);
+        }
+        .neu-input {
+            background: var(--gray-light);
+            box-shadow: inset 4px 4px 8px var(--shadow-dark), inset -4px -4px 8px var(--shadow-light);
+            border-radius: 12px;
+            border: none;
+            padding: 14px 18px;
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 15px;
+            color: var(--black);
+            width: 100%;
+            outline: none;
+            transition: all 0.3s ease;
+        }
+        .neu-input:focus {
+            box-shadow: inset 5px 5px 10px var(--shadow-dark-deep), inset -5px -5px 10px var(--shadow-light);
+            border: 1px solid var(--red-edim);
+        }
+        .neu-input::placeholder { color: #999; font-weight: 300; }
+        .header {
+            background: var(--black);
+            padding: 24px 40px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            position: relative;
+            overflow: hidden;
+        }
+        .header::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0;
+            height: 3px;
+            background: var(--red-edim);
+        }
+        .logo-area { display: flex; align-items: center; gap: 18px; }
+        .logo-icon {
+            width: 52px; height: 52px;
+            background: var(--red-edim);
+            border-radius: 14px;
+            display: flex; align-items: center; justify-content: center;
+            box-shadow: 0 0 20px rgba(227, 6, 19, 0.4);
+        }
+        .logo-icon svg { width: 32px; height: 32px; fill: white; }
+        .brand-text h1 {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 22px; font-weight: 800;
+            color: var(--white);
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            line-height: 1.2;
+        }
+        .brand-text span {
+            font-family: 'Rajdhani', sans-serif;
+            font-size: 13px; font-weight: 500;
+            color: var(--gray-mid);
+            letter-spacing: 4px;
+            text-transform: uppercase;
+        }
+        .header-badge {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 11px; font-weight: 700;
+            color: var(--red-edim);
+            border: 2px solid var(--red-edim);
+            padding: 8px 20px;
+            border-radius: 30px;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+        }
+        .main-container { max-width: 1400px; margin: 0 auto; padding: 30px 20px; }
+        .tabs-container {
+            display: flex; gap: 12px; margin-bottom: 30px;
+            flex-wrap: wrap; justify-content: center;
+        }
+        .tab-btn { padding: 16px 32px; font-size: 14px; }
+        .tab-btn svg { width: 20px; height: 20px; margin-right: 10px; vertical-align: middle; fill: currentColor; }
+        .content-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 30px; margin-bottom: 30px; }
+        @media (max-width: 1024px) { .content-grid { grid-template-columns: 1fr; } }
+        .panel { padding: 30px; }
+        .panel-title {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 16px; font-weight: 700;
+            color: var(--gray-dark);
+            margin-bottom: 24px;
+            display: flex; align-items: center; gap: 12px;
+            letter-spacing: 1px; text-transform: uppercase;
+        }
+        .panel-title svg { width: 24px; height: 24px; fill: var(--red-edim); }
+        .panel-title::after {
+            content: ''; flex: 1; height: 2px;
+            background: var(--gray-mid); border-radius: 1px; margin-left: 8px;
+        }
+        .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+        @media (max-width: 640px) {
+            .form-grid { grid-template-columns: 1fr; }
+            .header { flex-direction: column; gap: 16px; text-align: center; }
+            .tabs-container { flex-direction: column; align-items: stretch; }
+            .tab-btn { justify-content: center; }
+        }
+        .form-group { display: flex; flex-direction: column; gap: 8px; }
+        .form-group.full-width { grid-column: 1 / -1; }
+        .form-label {
+            font-family: 'Rajdhani', sans-serif;
+            font-weight: 600; font-size: 13px;
+            color: var(--gray-dark);
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            display: flex; align-items: center; gap: 6px;
+        }
+        .form-label .unit { font-weight: 400; color: #888; font-size: 12px; }
+        .select-wrapper { position: relative; }
+        .select-wrapper::after {
+            content: ''; position: absolute; right: 18px; top: 50%;
+            transform: translateY(-50%);
+            width: 0; height: 0;
+            border-left: 5px solid transparent;
+            border-right: 5px solid transparent;
+            border-top: 6px solid var(--gray-dark);
+            pointer-events: none;
+        }
+        select.neu-input { appearance: none; cursor: pointer; padding-right: 40px; }
+        .diagram-container {
+            display: flex; flex-direction: column;
+            align-items: center; justify-content: center;
+            min-height: 400px; position: relative;
+        }
+        .diagram-svg { width: 100%; max-width: 480px; height: auto; }
+        .diagram-legend {
+            display: flex; gap: 24px; margin-top: 20px;
+            flex-wrap: wrap; justify-content: center;
+        }
+        .legend-item {
+            display: flex; align-items: center; gap: 8px;
+            font-family: 'Rajdhani', sans-serif;
+            font-size: 13px; font-weight: 600;
+            color: var(--gray-dark);
+        }
+        .legend-dot { width: 12px; height: 12px; border-radius: 50%; }
+        .results-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 16px;
+        }
+        .result-card {
+            background: var(--gray-light);
+            box-shadow: 6px 6px 12px var(--shadow-dark), -6px -6px 12px var(--shadow-light);
+            border-radius: 16px; padding: 20px;
+            text-align: center;
+            transition: transform 0.3s ease;
+            border: 1px solid rgba(255,255,255,0.3);
+        }
+        .result-card:hover { transform: translateY(-4px); }
+        .result-card.highlight {
+            border: 2px solid var(--red-edim);
+            box-shadow: 6px 6px 16px rgba(227, 6, 19, 0.15), -6px -6px 16px var(--shadow-light);
+        }
+        .result-label {
+            font-family: 'Rajdhani', sans-serif;
+            font-size: 12px; font-weight: 600;
+            color: #888; text-transform: uppercase;
+            letter-spacing: 1.5px; margin-bottom: 10px;
+        }
+        .result-value {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 22px; font-weight: 700;
+            color: var(--black); line-height: 1.2;
+        }
+        .result-value.small { font-size: 16px; }
+        .result-unit {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 12px; color: #999; margin-top: 4px;
+        }
+        .formula-box {
+            background: var(--black); border-radius: 12px;
+            padding: 16px 20px; margin-top: 20px;
+            font-family: 'Space Grotesk', monospace;
+            font-size: 13px; color: var(--gray-mid);
+            overflow-x: auto;
+            border-left: 4px solid var(--red-edim);
+        }
+        .formula-box code { color: var(--white); font-weight: 500; }
+        .action-bar {
+            display: flex; gap: 16px;
+            justify-content: center; margin-top: 30px;
+            flex-wrap: wrap;
+        }
+        .btn-primary {
+            background: var(--red-edim); color: white;
+            box-shadow: 6px 6px 16px rgba(227, 6, 19, 0.3), -6px -6px 16px var(--shadow-light);
+            padding: 18px 48px; font-size: 15px; border: none;
+        }
+        .btn-primary:hover {
+            background: #c00510; color: white;
+            box-shadow: 8px 8px 24px rgba(227, 6, 19, 0.4), -8px -8px 24px var(--shadow-light);
+        }
+        .btn-secondary { padding: 18px 40px; font-size: 14px; }
+        .footer {
+            text-align: center; padding: 30px; margin-top: 20px;
+            font-family: 'Rajdhani', sans-serif;
+            font-size: 12px; color: #999;
+            letter-spacing: 2px; text-transform: uppercase;
+        }
+        .footer strong { color: var(--gray-dark); }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .animate-in { animation: fadeIn 0.5s ease forwards; }
+        .hidden { display: none !important; }
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: var(--gray-light); }
+        ::-webkit-scrollbar-thumb { background: var(--gray-mid); border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: var(--gray-dark); }
+    </style>
+</head>
+<body>
+
+<header class="header">
+    <div class="logo-area">
+        <div class="logo-icon">
+            <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/>
+            </svg>
+        </div>
+        <div class="brand-text">
+            <h1>EDIM SOLUCIONES</h1>
+            <span>Ingenieria Mecanica de Precision</span>
+        </div>
+    </div>
+    <div class="header-badge">Calculadora Tecnica</div>
+</header>
+
+<main class="main-container">
+    <div class="tabs-container">
+        <button class="neu-btn tab-btn active" data-tab="v-belt" onclick="switchTab('v-belt')">
+            <svg viewBox="0 0 24 24"><path d="M2 12h20M2 12c0-3 2-5 5-5h10c3 0 5 2 5 5s-2 5-5 5H7c-3 0-5-2-5-5z"/></svg>
+            Correas en V
+        </button>
+        <button class="neu-btn tab-btn" data-tab="flat" onclick="switchTab('flat')">
+            <svg viewBox="0 0 24 24"><rect x="2" y="8" width="20" height="8" rx="1"/></svg>
+            Correas Planas
+        </button>
+        <button class="neu-btn tab-btn" data-tab="sync" onclick="switchTab('sync')">
+            <svg viewBox="0 0 24 24"><path d="M4 6h16M4 10h16M4 14h16M4 18h16"/></svg>
+            Correas Sincronicas
+        </button>
+        <button class="neu-btn tab-btn" data-tab="polyv" onclick="switchTab('polyv')">
+            <svg viewBox="0 0 24 24"><path d="M4 6h2v12H4zm5 0h2v12H9zm5 0h2v12h-2zm5 0h2v12h-2z"/></svg>
+            Correas Poly-V
+        </button>
+    </div>
+
+    <div class="content-grid">
+        <div class="panel neu-flat" id="input-panel">
+            <div class="panel-title">
+                <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/></svg>
+                Parametros de Entrada
+            </div>
+
+            <div id="inputs-v-belt" class="tab-inputs">
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label class="form-label">Tipo de Perfil <span class="unit">(Seccion)</span></label>
+                        <div class="select-wrapper">
+                            <select class="neu-input" id="v-perfil">
+                                <option value="A">A (Clasica)</option>
+                                <option value="B">B (Clasica)</option>
+                                <option value="C">C (Clasica)</option>
+                                <option value="SPZ">SPZ (Estrecha)</option>
+                                <option value="SPA">SPA (Estrecha)</option>
+                                <option value="SPB">SPB (Estrecha)</option>
+                                <option value="SPC">SPC (Estrecha)</option>
+                                <option value="3V">3V (Angular)</option>
+                                <option value="5V">5V (Angular)</option>
+                                <option value="8V">8V (Angular)</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Potencia a Transmitir <span class="unit">(kW)</span></label>
+                        <input type="number" class="neu-input" id="v-potencia" value="7.5" step="0.1" min="0.1">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">RPM Polea Menor <span class="unit">(n1)</span></label>
+                        <input type="number" class="neu-input" id="v-rpm1" value="1440" step="10">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">RPM Polea Mayor <span class="unit">(n2)</span></label>
+                        <input type="number" class="neu-input" id="v-rpm2" value="800" step="10">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Diam. Polea Menor <span class="unit">(mm)</span></label>
+                        <input type="number" class="neu-input" id="v-d1" value="125" step="1">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Diam. Polea Mayor <span class="unit">(mm)</span></label>
+                        <input type="number" class="neu-input" id="v-d2" value="224" step="1">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Distancia Centros <span class="unit">(mm)</span></label>
+                        <input type="number" class="neu-input" id="v-c" value="500" step="1">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Factor Servicio <span class="unit">(fs)</span></label>
+                        <input type="number" class="neu-input" id="v-fs" value="1.3" step="0.1" min="1.0">
+                    </div>
+                    <div class="form-group full-width">
+                        <label class="form-label">Condicion de Trabajo</label>
+                        <div class="select-wrapper">
+                            <select class="neu-input" id="v-condicion" onchange="updateFs('v')">
+                                <option value="1.0">Uniforme - Uniforme (1.0)</option>
+                                <option value="1.1">Ligero choque - Uniforme (1.1)</option>
+                                <option value="1.2">Uniforme - Ligero choque (1.2)</option>
+                                <option value="1.3" selected>Ligero choque - Ligero choque (1.3)</option>
+                                <option value="1.4">Pesado choque - Ligero choque (1.4)</option>
+                                <option value="1.5">Pesado choque - Pesado choque (1.5)</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="inputs-flat" class="tab-inputs hidden">
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label class="form-label">Material <span class="unit">(Tipo)</span></label>
+                        <div class="select-wrapper">
+                            <select class="neu-input" id="f-material">
+                                <option value="cuero">Cuero</option>
+                                <option value="caucho">Caucho</option>
+                                <option value="sintetico">Sintetico</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Potencia a Transmitir <span class="unit">(kW)</span></label>
+                        <input type="number" class="neu-input" id="f-potencia" value="5.5" step="0.1">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">RPM Polea Menor <span class="unit">(n1)</span></label>
+                        <input type="number" class="neu-input" id="f-rpm1" value="1200" step="10">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">RPM Polea Mayor <span class="unit">(n2)</span></label>
+                        <input type="number" class="neu-input" id="f-rpm2" value="600" step="10">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Diam. Polea Menor <span class="unit">(mm)</span></label>
+                        <input type="number" class="neu-input" id="f-d1" value="200" step="1">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Diam. Polea Mayor <span class="unit">(mm)</span></label>
+                        <input type="number" class="neu-input" id="f-d2" value="400" step="1">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Distancia Centros <span class="unit">(mm)</span></label>
+                        <input type="number" class="neu-input" id="f-c" value="800" step="1">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Espesor Correa <span class="unit">(mm)</span></label>
+                        <input type="number" class="neu-input" id="f-espesor" value="5" step="0.5">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Ancho Correa <span class="unit">(mm)</span></label>
+                        <input type="number" class="neu-input" id="f-ancho" value="100" step="1">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Coef. Friccion <span class="unit">(mu)</span></label>
+                        <input type="number" class="neu-input" id="f-mu" value="0.3" step="0.05">
+                    </div>
+                </div>
+            </div>
+
+            <div id="inputs-sync" class="tab-inputs hidden">
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label class="form-label">Perfil Dentado <span class="unit">(Tipo)</span></label>
+                        <div class="select-wrapper">
+                            <select class="neu-input" id="s-perfil">
+                                <option value="XL">XL (5.08mm paso)</option>
+                                <option value="L">L (9.525mm paso)</option>
+                                <option value="H">H (12.7mm paso)</option>
+                                <option value="XH">XH (22.225mm paso)</option>
+                                <option value="T5">T5 (5mm paso)</option>
+                                <option value="T10">T10 (10mm paso)</option>
+                                <option value="AT5">AT5 (5mm paso)</option>
+                                <option value="AT10">AT10 (10mm paso)</option>
+                                <option value="HTD3M">HTD 3M</option>
+                                <option value="HTD5M">HTD 5M</option>
+                                <option value="HTD8M">HTD 8M</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Potencia a Transmitir <span class="unit">(kW)</span></label>
+                        <input type="number" class="neu-input" id="s-potencia" value="3.0" step="0.1">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">RPM Polea Menor <span class="unit">(n1)</span></label>
+                        <input type="number" class="neu-input" id="s-rpm1" value="1750" step="10">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">RPM Polea Mayor <span class="unit">(n2)</span></label>
+                        <input type="number" class="neu-input" id="s-rpm2" value="875" step="10">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Dientes Polea Menor <span class="unit">(z1)</span></label>
+                        <input type="number" class="neu-input" id="s-z1" value="20" step="1">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Dientes Polea Mayor <span class="unit">(z2)</span></label>
+                        <input type="number" class="neu-input" id="s-z2" value="40" step="1">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Ancho Correa <span class="unit">(mm)</span></label>
+                        <input type="number" class="neu-input" id="s-ancho" value="25" step="1">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Distancia Centros <span class="unit">(mm)</span></label>
+                        <input type="number" class="neu-input" id="s-c" value="300" step="1">
+                    </div>
+                </div>
+            </div>
+
+            <div id="inputs-polyv" class="tab-inputs hidden">
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label class="form-label">Perfil <span class="unit">(Seccion)</span></label>
+                        <div class="select-wrapper">
+                            <select class="neu-input" id="p-perfil">
+                                <option value="PH">PH</option>
+                                <option value="PJ">PJ</option>
+                                <option value="PK" selected>PK</option>
+                                <option value="PL">PL</option>
+                                <option value="PM">PM</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Potencia a Transmitir <span class="unit">(kW)</span></label>
+                        <input type="number" class="neu-input" id="p-potencia" value="10" step="0.1">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">RPM Polea Menor <span class="unit">(n1)</span></label>
+                        <input type="number" class="neu-input" id="p-rpm1" value="1450" step="10">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">RPM Polea Mayor <span class="unit">(n2)</span></label>
+                        <input type="number" class="neu-input" id="p-rpm2" value="725" step="10">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Diam. Polea Menor <span class="unit">(mm)</span></label>
+                        <input type="number" class="neu-input" id="p-d1" value="90" step="1">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Diam. Polea Mayor <span class="unit">(mm)</span></label>
+                        <input type="number" class="neu-input" id="p-d2" value="180" step="1">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Distancia Centros <span class="unit">(mm)</span></label>
+                        <input type="number" class="neu-input" id="p-c" value="400" step="1">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Num. Costillas <span class="unit">(nervaduras)</span></label>
+                        <input type="number" class="neu-input" id="p-nerv" value="6" step="1">
+                    </div>
+                    <div class="form-group full-width">
+                        <label class="form-label">Factor Servicio <span class="unit">(fs)</span></label>
+                        <input type="number" class="neu-input" id="p-fs" value="1.2" step="0.1">
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="panel neu-flat diagram-container">
+            <div class="panel-title">
+                <svg viewBox="0 0 24 24"><path d="M3 3h18v18H3zM9 9h6v6H9z"/></svg>
+                Esquema de Transmision
+            </div>
+            <svg class="diagram-svg" viewBox="0 0 500 350" id="diagram-svg">
+                <defs>
+                    <pattern id="grid" width="20" height="20" patternUnits="userSpaceOnUse">
+                        <path d="M 20 0 L 0 0 0 20" fill="none" stroke="#e0e0e0" stroke-width="0.5"/>
+                    </pattern>
+                    <marker id="arrowhead" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+                        <polygon points="0 0, 10 3.5, 0 7" fill="#3A3A3A"/>
+                    </marker>
+                </defs>
+                <rect width="500" height="350" fill="url(#grid)" rx="12"/>
+                <line x1="50" y1="175" x2="450" y2="175" stroke="#D9D9D9" stroke-width="1" stroke-dasharray="5,5"/>
+                <circle cx="150" cy="175" r="45" fill="#F2F2F2" stroke="#3A3A3A" stroke-width="3"/>
+                <circle cx="150" cy="175" r="35" fill="none" stroke="#E30613" stroke-width="2" stroke-dasharray="4,2"/>
+                <circle cx="150" cy="175" r="8" fill="#3A3A3A"/>
+                <text x="150" y="120" text-anchor="middle" font-family="Rajdhani" font-size="14" font-weight="600" fill="#3A3A3A">d (menor)</text>
+                <text x="150" y="245" text-anchor="middle" font-family="Space Grotesk" font-size="12" fill="#888" id="svg-d1-label">125 mm</text>
+                <circle cx="350" cy="175" r="75" fill="#F2F2F2" stroke="#3A3A3A" stroke-width="3"/>
+                <circle cx="350" cy="175" r="65" fill="none" stroke="#E30613" stroke-width="2" stroke-dasharray="4,2"/>
+                <circle cx="350" cy="175" r="8" fill="#3A3A3A"/>
+                <text x="350" y="85" text-anchor="middle" font-family="Rajdhani" font-size="14" font-weight="600" fill="#3A3A3A">D (mayor)</text>
+                <text x="350" y="275" text-anchor="middle" font-family="Space Grotesk" font-size="12" fill="#888" id="svg-d2-label">224 mm</text>
+                <line x1="150" y1="130" x2="350" y2="100" stroke="#E30613" stroke-width="4" stroke-linecap="round" id="belt-upper"/>
+                <line x1="150" y1="220" x2="350" y2="250" stroke="#E30613" stroke-width="4" stroke-linecap="round" id="belt-lower"/>
+                <path d="M 150 130 A 45 45 0 0 1 150 220" fill="none" stroke="#E30613" stroke-width="4" id="belt-left"/>
+                <path d="M 350 100 A 75 75 0 0 0 350 250" fill="none" stroke="#E30613" stroke-width="4" id="belt-right"/>
+                <line x1="150" y1="300" x2="350" y2="300" stroke="#3A3A3A" stroke-width="1.5"/>
+                <line x1="150" y1="295" x2="150" y2="305" stroke="#3A3A3A" stroke-width="1.5"/>
+                <line x1="350" y1="295" x2="350" y2="305" stroke="#3A3A3A" stroke-width="1.5"/>
+                <text x="250" y="318" text-anchor="middle" font-family="Rajdhani" font-size="13" font-weight="600" fill="#3A3A3A" id="svg-c-label">C = 500 mm</text>
+                <path d="M 150 175 L 110 140" stroke="#3A3A3A" stroke-width="1.5" stroke-dasharray="3,2"/>
+                <path d="M 150 175 L 110 210" stroke="#3A3A3A" stroke-width="1.5" stroke-dasharray="3,2"/>
+                <text x="95" y="180" text-anchor="middle" font-family="Space Grotesk" font-size="11" fill="#888" id="svg-alpha-label">alpha</text>
+                <path d="M 130 140 A 25 25 0 0 1 170 140" fill="none" stroke="#3A3A3A" stroke-width="1.5" marker-end="url(#arrowhead)"/>
+                <path d="M 330 110 A 40 40 0 0 0 370 110" fill="none" stroke="#3A3A3A" stroke-width="1.5" marker-end="url(#arrowhead)"/>
+            </svg>
+            <div class="diagram-legend">
+                <div class="legend-item"><div class="legend-dot" style="background:#E30613"></div>Trayectoria correa</div>
+                <div class="legend-item"><div class="legend-dot" style="background:#3A3A3A"></div>Eje de rotacion</div>
+                <div class="legend-item"><div class="legend-dot" style="background:#D9D9D9;border:2px solid #3A3A3A"></div>Polea</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="panel neu-flat animate-in">
+        <div class="panel-title">
+            <svg viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zM9 17H7v-7h2v7zm4 0h-2V7h2v10zm4 0h-2v-4h2v4z"/></svg>
+            Resultados del Calculo
+        </div>
+        <div class="results-grid" id="results-grid">
+            <div class="result-card">
+                <div class="result-label">Relacion de Transmision</div>
+                <div class="result-value" id="res-i">--</div>
+                <div class="result-unit">i = n1/n2 = D/d</div>
+            </div>
+            <div class="result-card">
+                <div class="result-label">Velocidad Lineal</div>
+                <div class="result-value" id="res-v">--</div>
+                <div class="result-unit">m/s</div>
+            </div>
+            <div class="result-card">
+                <div class="result-label">Longitud Correo</div>
+                <div class="result-value" id="res-L">--</div>
+                <div class="result-unit">mm</div>
+            </div>
+            <div class="result-card">
+                <div class="result-label">Angulo de Contacto</div>
+                <div class="result-value" id="res-alpha">--</div>
+                <div class="result-unit">grados (polea menor)</div>
+            </div>
+            <div class="result-card highlight">
+                <div class="result-label">Potencia Diseno</div>
+                <div class="result-value" id="res-Pd">--</div>
+                <div class="result-unit">kW (con factor servicio)</div>
+            </div>
+            <div class="result-card highlight">
+                <div class="result-label">Correas Requeridas</div>
+                <div class="result-value" id="res-num">--</div>
+                <div class="result-unit">unidades</div>
+            </div>
+            <div class="result-card">
+                <div class="result-label">Fuerza Centrifuga</div>
+                <div class="result-value small" id="res-Fc">--</div>
+                <div class="result-unit">N por correa</div>
+            </div>
+            <div class="result-card">
+                <div class="result-label">Tension Inicial</div>
+                <div class="result-value small" id="res-To">--</div>
+                <div class="result-unit">N recomendada</div>
+            </div>
+            <div class="result-card">
+                <div class="result-label">Frec. de Flexion</div>
+                <div class="result-value small" id="res-f">--</div>
+                <div class="result-unit">Hz</div>
+            </div>
+            <div class="result-card">
+                <div class="result-label">Vida Util Estimada</div>
+                <div class="result-value small" id="res-vida">--</div>
+                <div class="result-unit">horas</div>
+            </div>
+        </div>
+        <div class="formula-box" id="formula-display">
+            <code>L = 2C + pi*(D+d)/2 + (D-d)^2/(4C)</code><br>
+            <code>alpha = 180 - 57*(D-d)/C</code><br>
+            <code>Pd = P * fs</code><br>
+            <code>T1/T2 = e^(mu * alpha_rad)</code>
+        </div>
+    </div>
+
+    <div class="action-bar">
+        <button class="neu-btn btn-primary" onclick="calcular()">
+            <svg viewBox="0 0 24 24" style="width:18px;height:18px;fill:currentColor;vertical-align:middle;margin-right:8px">
+                <path d="M9 11H7v2h2v-2zm4 0h-2v2h2v-2zm4 0h-2v2h2v-2zm2-7h-1V2h-2v2H8V2H6v2H5c-1.11 0-1.99.9-1.99 2L3 20c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 16H5V9h14v11z"/>
+            </svg>
+            Calcular Transmision
+        </button>
+        <button class="neu-btn btn-secondary" onclick="exportarPDF()">
+            <svg viewBox="0 0 24 24" style="width:18px;height:18px;fill:currentColor;vertical-align:middle;margin-right:8px">
+                <path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"/>
+            </svg>
+            Exportar Reporte
+        </button>
+        <button class="neu-btn btn-secondary" onclick="limpiar()">
+            <svg viewBox="0 0 24 24" style="width:18px;height:18px;fill:currentColor;vertical-align:middle;margin-right:8px">
+                <path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/>
+            </svg>
+            Limpiar
+        </button>
+    </div>
+</main>
+
+<footer class="footer">
+    <strong>EDIM SOLUCIONES</strong> | Calculadora de Transmisiones por Correa v2.0<br>
+    Ingenieria Mecanica de Precision | Metodologia basada en normas ISO, RMA y DIN
+</footer>
+
+<script>
+// ==================== DATA TABLES ====================
+const perfilDataV = {
+    'A': { ancho: 13, alto: 8, masa: 0.10, K1: 0.77, K2: 4.62, K3: 1.34e-4, K4: 0.0136, dmin: 75, potBase: 0.68 },
+    'B': { ancho: 17, alto: 11, masa: 0.18, K1: 1.32, K2: 10.2, K3: 3.14e-4, K4: 0.0236, dmin: 125, potBase: 1.25 },
+    'C': { ancho: 22, alto: 14, masa: 0.30, K1: 2.31, K2: 24.2, K3: 7.43e-4, K4: 0.0412, dmin: 200, potBase: 2.15 },
+    'SPZ': { ancho: 10, alto: 8, masa: 0.07, K1: 0.62, K2: 3.20, K3: 0.96e-4, K4: 0.0108, dmin: 63, potBase: 0.55 },
+    'SPA': { ancho: 13, alto: 10, masa: 0.12, K1: 1.05, K2: 7.40, K3: 2.20e-4, K4: 0.0185, dmin: 90, potBase: 0.95 },
+    'SPB': { ancho: 16, alto: 13, masa: 0.20, K1: 1.78, K2: 16.8, K3: 5.10e-4, K4: 0.0315, dmin: 140, potBase: 1.65 },
+    'SPC': { ancho: 22, alto: 18, masa: 0.37, K1: 3.22, K2: 39.4, K3: 12.0e-4, K4: 0.0570, dmin: 224, potBase: 2.95 },
+    '3V': { ancho: 9, alto: 8, masa: 0.06, K1: 0.50, K2: 2.10, K3: 0.65e-4, K4: 0.0088, dmin: 56, potBase: 0.42 },
+    '5V': { ancho: 15, alto: 13, masa: 0.17, K1: 1.45, K2: 12.5, K3: 3.80e-4, K4: 0.0256, dmin: 112, potBase: 1.35 },
+    '8V': { ancho: 25, alto: 23, masa: 0.45, K1: 3.80, K2: 52.0, K3: 15.5e-4, K4: 0.0670, dmin: 315, potBase: 3.50 }
+};
+
+const perfilDataSync = {
+    'XL': { paso: 5.08, anchoStd: 9.5, potBase: 0.015 },
+    'L': { paso: 9.525, anchoStd: 19.1, potBase: 0.045 },
+    'H': { paso: 12.7, anchoStd: 25.4, potBase: 0.12 },
+    'XH': { paso: 22.225, anchoStd: 50.8, potBase: 0.35 },
+    'T5': { paso: 5.0, anchoStd: 10, potBase: 0.018 },
+    'T10': { paso: 10.0, anchoStd: 16, potBase: 0.065 },
+    'AT5': { paso: 5.0, anchoStd: 10, potBase: 0.022 },
+    'AT10': { paso: 10.0, anchoStd: 16, potBase: 0.080 },
+    'HTD3M': { paso: 3.0, anchoStd: 6, potBase: 0.008 },
+    'HTD5M': { paso: 5.0, anchoStd: 9, potBase: 0.025 },
+    'HTD8M': { paso: 8.0, anchoStd: 20, potBase: 0.090 }
+};
+
+const perfilDataPolyV = {
+    'PH': { paso: 1.6, alto: 2.3, potBase: 0.015 },
+    'PJ': { paso: 2.34, alto: 3.5, potBase: 0.035 },
+    'PK': { paso: 3.56, alto: 5.0, potBase: 0.075 },
+    'PL': { paso: 4.7, alto: 6.5, potBase: 0.14 },
+    'PM': { paso: 9.4, alto: 12.5, potBase: 0.38 }
+};
+
+const factorAngulo = [
+    { ang: 180, coef: 1.00 }, { ang: 175, coef: 0.99 }, { ang: 170, coef: 0.97 },
+    { ang: 165, coef: 0.96 }, { ang: 160, coef: 0.94 }, { ang: 155, coef: 0.93 },
+    { ang: 150, coef: 0.91 }, { ang: 145, coef: 0.89 }, { ang: 140, coef: 0.87 },
+    { ang: 135, coef: 0.85 }, { ang: 130, coef: 0.83 }, { ang: 125, coef: 0.80 },
+    { ang: 120, coef: 0.78 }, { ang: 115, coef: 0.75 }, { ang: 110, coef: 0.72 },
+    { ang: 105, coef: 0.69 }, { ang: 100, coef: 0.66 }, { ang: 95, coef: 0.62 },
+    { ang: 90, coef: 0.58 }
+];
+
+const factorLongitud = [
+    { L: 630, coef: 0.82 }, { L: 700, coef: 0.84 }, { L: 790, coef: 0.86 },
+    { L: 890, coef: 0.88 }, { L: 990, coef: 0.90 }, { L: 1100, coef: 0.92 },
+    { L: 1250, coef: 0.94 }, { L: 1400, coef: 0.96 }, { L: 1600, coef: 0.98 },
+    { L: 1800, coef: 1.00 }, { L: 2000, coef: 1.01 }, { L: 2240, coef: 1.02 },
+    { L: 2500, coef: 1.03 }, { L: 2800, coef: 1.04 }, { L: 3150, coef: 1.05 },
+    { L: 3550, coef: 1.06 }, { L: 4000, coef: 1.07 }, { L: 4500, coef: 1.08 }
+];
+
+function toRad(deg) { return deg * Math.PI / 180; }
+function toDeg(rad) { return rad * 180 / Math.PI; }
+function interpFactor(table, value, key, coef) {
+    key = key || 'ang'; coef = coef || 'coef';
+    let lower = table[0], upper = table[table.length - 1];
+    for (let i = 0; i < table.length - 1; i++) {
+        if (value >= table[i][key] && value <= table[i+1][key]) {
+            lower = table[i]; upper = table[i+1]; break;
+        }
+    }
+    if (value <= table[0][key]) return table[0][coef];
+    if (value >= table[table.length-1][key]) return table[table.length-1][coef];
+    return lower[coef] + (upper[coef] - lower[coef]) * (value - lower[key]) / (upper[key] - lower[key]);
+}
+
+function switchTab(tabId) {
+    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+    document.querySelector('[data-tab="' + tabId + '"]').classList.add('active');
+    document.querySelectorAll('.tab-inputs').forEach(el => el.classList.add('hidden'));
+    document.getElementById('inputs-' + tabId).classList.remove('hidden');
+    updateFormulas(tabId);
+    updateDiagram(tabId);
+}
+
+function updateFs(prefix) {
+    var sel = document.getElementById(prefix + '-condicion');
+    if (sel) document.getElementById(prefix + '-fs').value = sel.value;
+}
+
+function updateFormulas(tab) {
+    var box = document.getElementById('formula-display');
+    var formulas = {
+        'v-belt': 'L = 2C + pi*(D+d)/2 + (D-d)^2/(4C)<br>alpha = 180 - 57*(D-d)/C<br>Pd = P * fs<br>Nc = Pd / (Pbase * K_theta * K_L)<br>T1/T2 = e^(mu * alpha_rad)',
+        'flat': 'L = 2C + pi*(D+d)/2 + (D-d)^2/(4C)<br>alpha = 180 - 57*(D-d)/C<br>P = b * [(K1 - K2/d - K3*v^2) * v]<br>Fc = m * v^2<br>T1/T2 = e^(mu * alpha_rad)',
+        'sync': 'Lp = 2C + pi*(D+d)/2 + (D-d)^2/(4C)<br>D = z * paso / pi<br>i = z2/z1 = n1/n2<br>v = z1 * paso * n1 / 60000<br>Fc = m * v^2',
+        'polyv': 'L = 2C + pi*(D+d)/2 + (D-d)^2/(4C)<br>alpha = 180 - 57*(D-d)/C<br>Pd = P * fs<br>Nc = Pd / (Pbase * K_theta * K_L * nervaduras)<br>Fc = m * v^2'
+    };
+    box.innerHTML = '<code>' + formulas[tab] + '</code>';
+}
+
+function updateDiagram(tab) {
+    var getVal = function(id) { return parseFloat(document.getElementById(id)?.value) || 0; };
+    var d1, d2, c;
+    if (tab === 'v-belt') { d1 = getVal('v-d1'); d2 = getVal('v-d2'); c = getVal('v-c'); }
+    else if (tab === 'flat') { d1 = getVal('f-d1'); d2 = getVal('f-d2'); c = getVal('f-c'); }
+    else if (tab === 'sync') { 
+        var p = (perfilDataSync[document.getElementById('s-perfil').value] || {}).paso || 5;
+        d1 = getVal('s-z1') * p / Math.PI; 
+        d2 = getVal('s-z2') * p / Math.PI; 
+        c = getVal('s-c'); 
+    }
+    else { d1 = getVal('p-d1'); d2 = getVal('p-d2'); c = getVal('p-c'); }
+
+    if (d1 > 0 && d2 > 0 && c > 0) {
+        var scale = Math.min(180 / d2, 1);
+        var r1 = d1 * scale * 0.5;
+        var r2 = d2 * scale * 0.5;
+        var svg = document.getElementById('diagram-svg');
+        var circles = svg.querySelectorAll('circle');
+        if (circles[0]) circles[0].setAttribute('r', Math.max(r1, 20));
+        if (circles[3]) circles[3].setAttribute('r', Math.max(r2, 35));
+        document.getElementById('svg-d1-label').textContent = Math.round(d1) + ' mm';
+        document.getElementById('svg-d2-label').textContent = Math.round(d2) + ' mm';
+        document.getElementById('svg-c-label').textContent = 'C = ' + Math.round(c) + ' mm';
+        var alpha = 180 - 57 * (d2 - d1) / c;
+        document.getElementById('svg-alpha-label').textContent = 'alpha = ' + alpha.toFixed(1) + '°';
+    }
+}
+
+function calcular() {
+    var activeTab = document.querySelector('.tab-btn.active').dataset.tab;
+    try {
+        if (activeTab === 'v-belt') calcularV();
+        else if (activeTab === 'flat') calcularFlat();
+        else if (activeTab === 'sync') calcularSync();
+        else if (activeTab === 'polyv') calcularPolyV();
+        updateDiagram(activeTab);
+    } catch (e) {
+        alert('Error en el calculo: ' + e.message);
+    }
+}
+
+function setResult(id, val, dec) {
+    dec = dec || 2;
+    var el = document.getElementById(id);
+    if (el) el.textContent = (val === null || val === undefined || isNaN(val)) ? '--' : val.toFixed(dec);
+}
+
+function calcularV() {
+    var perfil = document.getElementById('v-perfil').value;
+    var P = parseFloat(document.getElementById('v-potencia').value);
+    var n1 = parseFloat(document.getElementById('v-rpm1').value);
+    var n2 = parseFloat(document.getElementById('v-rpm2').value);
+    var d = parseFloat(document.getElementById('v-d1').value);
+    var D = parseFloat(document.getElementById('v-d2').value);
+    var C = parseFloat(document.getElementById('v-c').value);
+    var fs = parseFloat(document.getElementById('v-fs').value);
+    var data = perfilDataV[perfil];
+
+    var i = n1 / n2;
+    var v = Math.PI * d * n1 / 60000;
+    var L = 2 * C + (Math.PI / 2) * (D + d) + Math.pow(D - d, 2) / (4 * C);
+    var alpha = 180 - 57 * (D - d) / C;
+    var alphaRad = toRad(alpha);
+    var Pd = P * fs;
+
+    // RMA formula approximation
+    var r = n1 / 1000;
+    var Ki = 1 / (1 + 0.35 * Math.log10((1 + Math.pow(10, -(1/0.35)*(1-1/i)))/2));
+    var N1 = d * r * (data.K1 - data.K2/d - data.K3*Math.pow(d*r,2) - data.K4*Math.log10(d*r)) + data.K2*r*(1-1/Ki);
+    if (N1 < 0.1) N1 = data.potBase * (d / data.dmin) * (n1 / 1440);
+
+    var Ca = 1.25 * (1 - Math.pow(5, -alpha/180));
+    var Lb = (perfil === 'A') ? 1730 : (perfil === 'B') ? 2280 : (perfil === 'C') ? 3800 : 2280;
+    var Cl = 1 + (Math.log10(L) - Math.log10(Lb)) / (Math.log10(Lb) - 1.65);
+    if (Cl < 0.8) Cl = 0.8; if (Cl > 1.15) Cl = 1.15;
+    var Pcorr = N1 * Ca * Cl;
+    var numCorreas = Math.ceil(Pd / Pcorr);
+    if (numCorreas < 1) numCorreas = 1;
+
+    var masa = data.masa;
+    var Fc = masa * v * v;
+    var mu = 0.51; // typical V-belt friction
+    var T1_T2 = Math.exp(mu * alphaRad);
+    var Pw = Pd * 1000 / numCorreas;
+    var Fd = Pw / v;
+    var T2 = Fd / (T1_T2 - 1);
+    var T1 = T2 * T1_T2;
+    var To = 0.5 * (T1 + T2);
+    var f = v / L;
+    var vida = 20000 * Math.pow(10, (120 - alpha)/30) * Math.pow(data.dmin/d, 2) * Math.pow(10/v, 1.5);
+    if (vida > 50000) vida = 50000;
+
+    setResult('res-i', i, 2);
+    setResult('res-v', v, 2);
+    setResult('res-L', L, 0);
+    setResult('res-alpha', alpha, 1);
+    setResult('res-Pd', Pd, 2);
+    setResult('res-num', numCorreas, 0);
+    setResult('res-Fc', Fc, 2);
+    setResult('res-To', To, 1);
+    setResult('res-f', f, 2);
+    setResult('res-vida', vida, 0);
+}
+
+function calcularFlat() {
+    var material = document.getElementById('f-material').value;
+    var P = parseFloat(document.getElementById('f-potencia').value);
+    var n1 = parseFloat(document.getElementById('f-rpm1').value);
+    var n2 = parseFloat(document.getElementById('f-rpm2').value);
+    var d = parseFloat(document.getElementById('f-d1').value);
+    var D = parseFloat(document.getElementById('f-d2').value);
+    var C = parseFloat(document.getElementById('f-c').value);
+    var e = parseFloat(document.getElementById('f-espesor').value);
+    var b = parseFloat(document.getElementById('f-ancho').value);
+    var mu = parseFloat(document.getElementById('f-mu').value);
+
+    var i = n1 / n2;
+    var v = Math.PI * d * n1 / 60000;
+    var L = 2 * C + (Math.PI / 2) * (D + d) + Math.pow(D - d, 2) / (4 * C);
+    var alpha = 180 - 57 * (D - d) / C;
+    var alphaRad = toRad(alpha);
+
+    var densidad = (material === 'cuero') ? 1000 : (material === 'caucho') ? 1200 : 1100;
+    var A = b * e / 1000000; // m2
+    var m = densidad * A; // kg/m
+    var Fc = m * v * v;
+
+    // Flat belt power formula (simplified empirical)
+    var K1p = (material === 'cuero') ? 2.5 : (material === 'caucho') ? 3.2 : 2.8;
+    var K2p = (material === 'cuero') ? 15 : (material === 'caucho') ? 22 : 18;
+    var K3p = (material === 'cuero') ? 5e-4 : (material === 'caucho') ? 8e-4 : 6e-4;
+    var N180 = (K1p - K2p/d - K3p * v*v) * v; // kW per mm width
+    var fa = interpFactor(factorAngulo, alpha);
+    var N0 = N180 * fa;
+    var breq = P / N0; // required width in mm
+    var num = 1; // flat belts are single
+    if (breq > b * 1.5) num = Math.ceil(breq / b);
+
+    var T1_T2 = Math.exp(mu * alphaRad);
+    var Pw = P * 1000;
+    var Fd = Pw / v;
+    var T2 = Fd / (T1_T2 - 1);
+    var T1 = T2 * T1_T2;
+    var To = 0.5 * (T1 + T2) + Fc;
+    var f = v / L;
+    var vida = 15000 * Math.pow(10, (150 - alpha)/40) * Math.pow(5/v, 1.2);
+
+    setResult('res-i', i, 2);
+    setResult('res-v', v, 2);
+    setResult('res-L', L, 0);
+    setResult('res-alpha', alpha, 1);
+    setResult('res-Pd', P, 2);
+    setResult('res-num', num, 0);
+    setResult('res-Fc', Fc, 2);
+    setResult('res-To', To, 1);
+    setResult('res-f', f, 2);
+    setResult('res-vida', vida, 0);
+}
+
+function calcularSync() {
+    var perfil = document.getElementById('s-perfil').value;
+    var P = parseFloat(document.getElementById('s-potencia').value);
+    var n1 = parseFloat(document.getElementById('s-rpm1').value);
+    var n2 = parseFloat(document.getElementById('s-rpm2').value);
+    var z1 = parseFloat(document.getElementById('s-z1').value);
+    var z2 = parseFloat(document.getElementById('s-z2').value);
+    var b = parseFloat(document.getElementById('s-ancho').value);
+    var C = parseFloat(document.getElementById('s-c').value);
+    var data = perfilDataSync[perfil];
+
+    var paso = data.paso;
+    var d = z1 * paso / Math.PI;
+    var D = z2 * paso / Math.PI;
+    var i = z2 / z1;
+    var i_rpm = n1 / n2;
+    var v = z1 * paso * n1 / 60000;
+    var L = 2 * C + (Math.PI / 2) * (D + d) + Math.pow(D - d, 2) / (4 * C);
+    var alpha = 180 - 57 * (D - d) / C;
+
+    var masa = 0.00015 * b; // kg/m approx
+    var Fc = masa * v * v;
+    var Pd = P * 1.2; // default service factor for sync
+    var potPerWidth = data.potBase * (n1 / 1000) * (d / 50);
+    var num = Math.ceil(Pd / (potPerWidth * b / 25));
+    if (num < 1) num = 1;
+    var f = v / L;
+    var vida = 25000 * Math.pow(10, (170 - alpha)/50) * Math.pow(8/v, 1.0);
+
+    setResult('res-i', i, 2);
+    setResult('res-v', v, 2);
+    setResult('res-L', L, 0);
+    setResult('res-alpha', alpha, 1);
+    setResult('res-Pd', Pd, 2);
+    setResult('res-num', num, 0);
+    setResult('res-Fc', Fc, 3);
+    setResult('res-To', Fc * 2.5, 1);
+    setResult('res-f', f, 2);
+    setResult('res-vida', vida, 0);
+}
+
+function calcularPolyV() {
+    var perfil = document.getElementById('p-perfil').value;
+    var P = parseFloat(document.getElementById('p-potencia').value);
+    var n1 = parseFloat(document.getElementById('p-rpm1').value);
+    var n2 = parseFloat(document.getElementById('p-rpm2').value);
+    var d = parseFloat(document.getElementById('p-d1').value);
+    var D = parseFloat(document.getElementById('p-d2').value);
+    var C = parseFloat(document.getElementById('p-c').value);
+    var nerv = parseFloat(document.getElementById('p-nerv').value);
+    var fs = parseFloat(document.getElementById('p-fs').value);
+    var data = perfilDataPolyV[perfil];
+
+    var i = n1 / n2;
+    var v = Math.PI * d * n1 / 60000;
+    var L = 2 * C + (Math.PI / 2) * (D + d) + Math.pow(D - d, 2) / (4 * C);
+    var alpha = 180 - 57 * (D - d) / C;
+    var Pd = P * fs;
+
+    var potPerRib = data.potBase * (n1 / 1000) * Math.pow(d / 75, 0.8);
+    var Ca = 1.25 * (1 - Math.pow(5, -alpha/180));
+    var Cl = interpFactor(factorLongitud, L, 'L', 'coef');
+    var potTotal = potPerRib * nerv * Ca * Cl;
+    var num = Math.ceil(Pd / potTotal);
+    if (num < 1) num = 1;
+
+    var masa = 0.00012 * nerv;
+    var Fc = masa * v * v;
+    var mu = 0.52;
+    var alphaRad = toRad(alpha);
+    var T1_T2 = Math.exp(mu * alphaRad);
+    var Pw = Pd * 1000 / num;
+    var Fd = Pw / v;
+    var T2 = Fd / (T1_T2 - 1);
+    var T1 = T2 * T1_T2;
+    var To = 0.5 * (T1 + T2);
+    var f = v / L;
+    var vida = 22000 * Math.pow(10, (130 - alpha)/35) * Math.pow(10/v, 1.3);
+
+    setResult('res-i', i, 2);
+    setResult('res-v', v, 2);
+    setResult('res-L', L, 0);
+    setResult('res-alpha', alpha, 1);
+    setResult('res-Pd', Pd, 2);
+    setResult('res-num', num, 0);
+    setResult('res-Fc', Fc, 2);
+    setResult('res-To', To, 1);
+    setResult('res-f', f, 2);
+    setResult('res-vida', vida, 0);
+}
+
+function limpiar() {
+    document.querySelectorAll('.neu-input').forEach(function(inp) {
+        if (inp.tagName === 'SELECT') { inp.selectedIndex = 0; }
+        else { inp.value = ''; }
+    });
+    ['res-i','res-v','res-L','res-alpha','res-Pd','res-num','res-Fc','res-To','res-f','res-vida'].forEach(function(id) {
+        var el = document.getElementById(id);
+        if (el) el.textContent = '--';
+    });
+}
+
+function exportarPDF() {
+    var activeTab = document.querySelector('.tab-btn.active').dataset.tab;
+    var tabNames = { 'v-belt': 'Correas en V', 'flat': 'Correas Planas', 'sync': 'Correas Sincronicas', 'polyv': 'Correas Poly-V' };
+    var report = 'EDIM SOLUCIONES - REPORTE DE CALCULO\n';
+    report += 'Tipo: ' + tabNames[activeTab] + '\n';
+    report += 'Fecha: ' + new Date().toLocaleString() + '\n\n';
+    report += 'RESULTADOS:\n';
+    report += 'Relacion de transmision: ' + document.getElementById('res-i').textContent + '\n';
+    report += 'Velocidad lineal: ' + document.getElementById('res-v').textContent + ' m/s\n';
+    report += 'Longitud de correa: ' + document.getElementById('res-L').textContent + ' mm\n';
+    report += 'Angulo de contacto: ' + document.getElementById('res-alpha').textContent + ' grados\n';
+    report += 'Potencia de diseno: ' + document.getElementById('res-Pd').textContent + ' kW\n';
+    report += 'Correas requeridas: ' + document.getElementById('res-num').textContent + '\n';
+    report += 'Fuerza centrifuga: ' + document.getElementById('res-Fc').textContent + ' N\n';
+    report += 'Tension inicial: ' + document.getElementById('res-To').textContent + ' N\n';
+    report += 'Frecuencia de flexion: ' + document.getElementById('res-f').textContent + ' Hz\n';
+    report += 'Vida util estimada: ' + document.getElementById('res-vida').textContent + ' horas\n';
+
+    var blob = new Blob([report], { type: 'text/plain' });
+    var url = URL.createObjectURL(blob);
+    var a = document.createElement('a');
+    a.href = url;
+    a.download = 'reporte_EDIM_' + activeTab + '_' + Date.now() + '.txt';
+    a.click();
+    URL.revokeObjectURL(url);
+}
+
+// Initialize
+document.addEventListener('DOMContentLoaded', function() {
+    updateDiagram('v-belt');
+});
+</script>
+</body>
+</html>

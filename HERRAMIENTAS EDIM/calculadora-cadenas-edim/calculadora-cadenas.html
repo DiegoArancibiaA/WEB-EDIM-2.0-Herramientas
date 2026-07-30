@@ -1,0 +1,566 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Calculadora Cadenas de Transmision | EDIM SOLUCIONES</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;800;900&family=Rajdhani:wght@300;400;500;600;700&family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --white: #FFFFFF; --black: #121212; --light-gray: #F2F2F2;
+  --mid-gray: #D9D9D9; --dark-gray: #3A3A3A; --accent: #E30613;
+  --shadow-light: #FFFFFF; --shadow-dark: rgba(18,18,18,0.12);
+}
+* { margin:0; padding:0; box-sizing:border-box; }
+body {
+  font-family: 'Space Grotesk', sans-serif; background: var(--light-gray);
+  color: var(--black); min-height: 100vh; line-height: 1.6;
+}
+.neu-flat {
+  background: var(--light-gray); border-radius: 20px;
+  box-shadow: 8px 8px 16px var(--shadow-dark), -8px -8px 16px var(--shadow-light);
+  border: 1px solid rgba(255,255,255,0.4);
+}
+.neu-pressed {
+  background: var(--light-gray); border-radius: 16px;
+  box-shadow: inset 4px 4px 8px var(--shadow-dark), inset -4px -4px 8px var(--shadow-light);
+  border: 1px solid rgba(255,255,255,0.2);
+}
+.neu-btn {
+  background: var(--light-gray); border: none; border-radius: 14px;
+  padding: 14px 28px; font-family: 'Rajdhani', sans-serif; font-weight: 600;
+  font-size: 1rem; color: var(--dark-gray); cursor: pointer;
+  box-shadow: 6px 6px 12px var(--shadow-dark), -6px -6px 12px var(--shadow-light);
+  transition: all 0.25s cubic-bezier(0.4,0,0.2,1); text-transform: uppercase; letter-spacing: 1px;
+}
+.neu-btn:hover { transform: translateY(-2px); box-shadow: 8px 8px 16px var(--shadow-dark), -8px -8px 16px var(--shadow-light); }
+.neu-btn:active { transform: translateY(0); box-shadow: inset 4px 4px 8px var(--shadow-dark), inset -4px -4px 8px var(--shadow-light); }
+.neu-btn.primary { background: var(--accent); color: var(--white); box-shadow: 6px 6px 12px rgba(227,6,19,0.3), -6px -6px 12px var(--shadow-light); }
+.neu-btn.primary:hover { box-shadow: 8px 8px 16px rgba(227,6,19,0.4), -8px -8px 16px var(--shadow-light); }
+.header {
+  background: var(--black); padding: 24px 32px; display: flex; align-items: center;
+  justify-content: space-between; flex-wrap: wrap; gap: 16px;
+  box-shadow: 0 4px 24px rgba(0,0,0,0.15); position: sticky; top: 0; z-index: 100;
+}
+.logo-group { display: flex; align-items: center; gap: 16px; }
+.logo-icon { width: 48px; height: 48px; background: var(--accent); border-radius: 12px;
+  display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 12px rgba(227,6,19,0.3); }
+.logo-icon svg { width: 28px; height: 28px; }
+.brand-title { font-family: 'Orbitron', sans-serif; font-weight: 800; font-size: 1.4rem; color: var(--white); letter-spacing: 2px; }
+.brand-sub { font-family: 'Rajdhani', sans-serif; font-weight: 500; font-size: 0.85rem; color: var(--mid-gray); letter-spacing: 3px; text-transform: uppercase; }
+.norma-badge { font-family: 'Orbitron', sans-serif; font-size: 0.7rem; color: var(--accent); border: 1px solid var(--accent); padding: 6px 14px; border-radius: 20px; letter-spacing: 2px; }
+.container { max-width: 1400px; margin: 0 auto; padding: 32px 24px; }
+.grid-main { display: grid; grid-template-columns: 1fr 1fr; gap: 28px; }
+@media (max-width: 1024px) { .grid-main { grid-template-columns: 1fr; } }
+.card { padding: 28px; margin-bottom: 28px; }
+.card-title { font-family: 'Orbitron', sans-serif; font-weight: 700; font-size: 1.1rem; color: var(--black); margin-bottom: 20px; display: flex; align-items: center; gap: 12px; letter-spacing: 1px; }
+.card-title svg { width: 24px; height: 24px; stroke: var(--accent); fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+.form-group { margin-bottom: 20px; }
+.form-label { display: block; font-family: 'Rajdhani', sans-serif; font-weight: 600; font-size: 0.9rem; color: var(--dark-gray); margin-bottom: 8px; text-transform: uppercase; letter-spacing: 1.5px; }
+.form-input, .form-select { width: 100%; padding: 14px 18px; font-family: 'Space Grotesk', sans-serif; font-size: 1rem; color: var(--black); background: var(--light-gray); border: none; border-radius: 14px;
+  box-shadow: inset 4px 4px 8px var(--shadow-dark), inset -4px -4px 8px var(--shadow-light); outline: none; transition: box-shadow 0.2s; }
+.form-input:focus, .form-select:focus { box-shadow: inset 6px 6px 12px var(--shadow-dark), inset -6px -6px 12px var(--shadow-light), 0 0 0 2px rgba(227,6,19,0.15); }
+.form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+@media (max-width: 640px) { .form-row { grid-template-columns: 1fr; } }
+.chain-selector { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 12px; margin-top: 12px; }
+.chain-option { cursor: pointer; padding: 16px 12px; border-radius: 16px; text-align: center; transition: all 0.25s; background: var(--light-gray);
+  box-shadow: 5px 5px 10px var(--shadow-dark), -5px -5px 10px var(--shadow-light); border: 2px solid transparent; }
+.chain-option:hover { transform: translateY(-3px); box-shadow: 7px 7px 14px var(--shadow-dark), -7px -7px 14px var(--shadow-light); }
+.chain-option.active { border-color: var(--accent); box-shadow: inset 3px 3px 6px var(--shadow-dark), inset -3px -3px 6px var(--shadow-light); }
+.chain-option .chain-iso { font-family: 'Orbitron', sans-serif; font-weight: 700; font-size: 1.2rem; color: var(--black); }
+.chain-option .chain-ansi { font-family: 'Rajdhani', sans-serif; font-size: 0.8rem; color: var(--dark-gray); margin-top: 2px; }
+.chain-option .chain-pitch { font-family: 'Space Grotesk', sans-serif; font-size: 0.75rem; color: var(--accent); font-weight: 600; margin-top: 4px; }
+.chain-svg-container { display: flex; justify-content: center; margin: 20px 0; padding: 20px; }
+.strand-selector { display: flex; gap: 12px; margin-top: 12px; }
+.strand-btn { flex: 1; padding: 14px; border-radius: 14px; border: none; background: var(--light-gray);
+  box-shadow: 5px 5px 10px var(--shadow-dark), -5px -5px 10px var(--shadow-light); cursor: pointer;
+  font-family: 'Rajdhani', sans-serif; font-weight: 600; font-size: 0.95rem; color: var(--dark-gray);
+  transition: all 0.2s; text-transform: uppercase; letter-spacing: 1px; }
+.strand-btn:hover { transform: translateY(-2px); }
+.strand-btn.active { background: var(--accent); color: var(--white); box-shadow: inset 3px 3px 6px rgba(0,0,0,0.2), inset -3px -3px 6px rgba(255,255,255,0.1); }
+.results-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; }
+@media (max-width: 640px) { .results-grid { grid-template-columns: 1fr; } }
+.result-item { padding: 18px; border-radius: 16px; background: var(--light-gray);
+  box-shadow: inset 3px 3px 6px var(--shadow-dark), inset -3px -3px 6px var(--shadow-light); }
+.result-label { font-family: 'Rajdhani', sans-serif; font-weight: 600; font-size: 0.8rem; color: var(--dark-gray); text-transform: uppercase; letter-spacing: 1.5px; margin-bottom: 6px; }
+.result-value { font-family: 'Orbitron', sans-serif; font-weight: 700; font-size: 1.3rem; color: var(--black); }
+.result-value.accent { color: var(--accent); }
+.result-value.warning { color: #C75B00; }
+.result-value.danger { color: var(--accent); }
+.result-unit { font-family: 'Space Grotesk', sans-serif; font-size: 0.8rem; color: var(--dark-gray); margin-left: 4px; }
+.alert-box { padding: 16px 20px; border-radius: 14px; margin-top: 16px; display: none; align-items: flex-start; gap: 12px; font-family: 'Space Grotesk', sans-serif; font-size: 0.9rem; }
+.alert-box.show { display: flex; }
+.alert-box.warning { background: rgba(199,91,0,0.08); border: 1px solid rgba(199,91,0,0.25); color: #8B4500; }
+.alert-box.danger { background: rgba(227,6,19,0.08); border: 1px solid rgba(227,6,19,0.25); color: var(--accent); }
+.alert-box.info { background: rgba(58,58,58,0.06); border: 1px solid rgba(58,58,58,0.2); color: var(--dark-gray); }
+.alert-box svg { width: 22px; height: 22px; flex-shrink: 0; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; fill: none; }
+.sf-table-container { overflow-x: auto; margin-top: 16px; border-radius: 16px;
+  box-shadow: inset 3px 3px 6px var(--shadow-dark), inset -3px -3px 6px var(--shadow-light); }
+.sf-table { width: 100%; border-collapse: collapse; font-family: 'Space Grotesk', sans-serif; font-size: 0.85rem; }
+.sf-table th { background: var(--black); color: var(--white); font-family: 'Rajdhani', sans-serif; font-weight: 600; text-transform: uppercase; letter-spacing: 1px; padding: 14px 12px; text-align: left; font-size: 0.8rem; }
+.sf-table td { padding: 12px; border-bottom: 1px solid var(--mid-gray); color: var(--black); cursor: pointer; transition: background 0.15s; }
+.sf-table tr:hover td { background: rgba(227,6,19,0.04); }
+.sf-table tr.selected td { background: rgba(227,6,19,0.1); font-weight: 600; }
+.sf-table tr.selected td:first-child { border-left: 3px solid var(--accent); }
+.lube-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 10px; margin-top: 16px; }
+@media (max-width: 768px) { .lube-grid { grid-template-columns: repeat(3, 1fr); } }
+@media (max-width: 480px) { .lube-grid { grid-template-columns: 1fr 1fr; } }
+.lube-card { padding: 16px 10px; border-radius: 14px; text-align: center; background: var(--light-gray);
+  box-shadow: 4px 4px 8px var(--shadow-dark), -4px -4px 8px var(--shadow-light); transition: all 0.2s; border: 2px solid transparent; }
+.lube-card.active { border-color: var(--accent); box-shadow: inset 3px 3px 6px var(--shadow-dark), inset -3px -3px 6px var(--shadow-light); }
+.lube-card .lube-type { font-family: 'Orbitron', sans-serif; font-weight: 700; font-size: 1.1rem; color: var(--black); }
+.lube-card .lube-name { font-family: 'Rajdhani', sans-serif; font-size: 0.75rem; color: var(--dark-gray); margin-top: 4px; text-transform: uppercase; letter-spacing: 1px; }
+.lube-card .lube-range { font-family: 'Space Grotesk', sans-serif; font-size: 0.7rem; color: var(--accent); margin-top: 6px; font-weight: 600; }
+.formula-box { padding: 20px; border-radius: 16px; margin-top: 16px; background: var(--black); color: var(--white); font-family: 'Space Grotesk', sans-serif; }
+.formula-box .formula-title { font-family: 'Orbitron', sans-serif; font-size: 0.85rem; color: var(--accent); margin-bottom: 12px; letter-spacing: 1px; }
+.formula-box .formula { font-family: 'Space Grotesk', sans-serif; font-size: 0.9rem; color: var(--mid-gray); line-height: 2; }
+.formula-box .formula code { color: var(--white); background: rgba(255,255,255,0.08); padding: 3px 8px; border-radius: 6px; font-family: 'Space Grotesk', sans-serif; }
+.footer { text-align: center; padding: 32px; font-family: 'Rajdhani', sans-serif; font-size: 0.85rem; color: var(--dark-gray); letter-spacing: 2px; text-transform: uppercase; }
+.footer strong { color: var(--accent); font-weight: 700; }
+::-webkit-scrollbar { width: 8px; }
+::-webkit-scrollbar-track { background: var(--light-gray); }
+::-webkit-scrollbar-thumb { background: var(--mid-gray); border-radius: 4px; }
+::-webkit-scrollbar-thumb:hover { background: var(--dark-gray); }
+@keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+.fade-in { animation: fadeIn 0.4s ease-out forwards; }
+.btn-full { width: 100%; margin-top: 8px; }
+.sprocket-preview { display: flex; justify-content: center; gap: 40px; margin: 20px 0; flex-wrap: wrap; }
+.sprocket-item { text-align: center; }
+.sprocket-item .sprocket-label { font-family: 'Rajdhani', sans-serif; font-weight: 600; font-size: 0.8rem; color: var(--dark-gray); text-transform: uppercase; letter-spacing: 1px; margin-top: 8px; }
+.sprocket-item .sprocket-value { font-family: 'Orbitron', sans-serif; font-size: 0.9rem; color: var(--accent); margin-top: 2px; }
+.section-divider { height: 2px; background: linear-gradient(90deg, transparent, var(--mid-gray), transparent); margin: 24px 0; border: none; }
+</style>
+</head>
+<body>
+<header class="header">
+  <div class="logo-group">
+    <div class="logo-icon">
+      <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <circle cx="12" cy="12" r="3"/>
+        <path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/>
+      </svg>
+    </div>
+    <div>
+      <div class="brand-title">EDIM SOLUCIONES</div>
+      <div class="brand-sub">Ingenieria Mecanica & Transmisiones</div>
+    </div>
+  </div>
+  <div class="norma-badge">ANSI B29.1 / ISO 606</div>
+</header>
+
+<div class="container">
+  <div class="grid-main">
+    <div class="left-col">
+      <div class="card neu-flat fade-in">
+        <div class="card-title">
+          <svg viewBox="0 0 24 24"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/><line x1="10" y1="2" x2="10" y2="22"/></svg>
+          Seleccion de Cadena
+        </div>
+        <div class="form-group">
+          <label class="form-label">Paso de Cadena (ISO / ANSI)</label>
+          <div class="chain-selector" id="chainSelector"></div>
+        </div>
+        <div class="chain-svg-container" id="chainSvgContainer">
+          <svg id="chainLinkSvg" width="280" height="80" viewBox="0 0 280 80">
+            <rect x="20" y="25" width="60" height="30" rx="6" fill="none" stroke="#3A3A3A" stroke-width="3"/>
+            <circle cx="35" cy="40" r="8" fill="none" stroke="#3A3A3A" stroke-width="2.5"/>
+            <circle cx="65" cy="40" r="8" fill="none" stroke="#3A3A3A" stroke-width="2.5"/>
+            <circle cx="50" cy="40" r="11" fill="none" stroke="#E30613" stroke-width="2.5"/>
+            <rect x="70" y="18" width="60" height="44" rx="6" fill="none" stroke="#121212" stroke-width="3"/>
+            <circle cx="85" cy="40" r="8" fill="none" stroke="#121212" stroke-width="2.5"/>
+            <circle cx="115" cy="40" r="8" fill="none" stroke="#121212" stroke-width="2.5"/>
+            <rect x="120" y="25" width="60" height="30" rx="6" fill="none" stroke="#3A3A3A" stroke-width="3"/>
+            <circle cx="135" cy="40" r="8" fill="none" stroke="#3A3A3A" stroke-width="2.5"/>
+            <circle cx="165" cy="40" r="8" fill="none" stroke="#3A3A3A" stroke-width="2.5"/>
+            <circle cx="150" cy="40" r="11" fill="none" stroke="#E30613" stroke-width="2.5"/>
+            <rect x="170" y="18" width="60" height="44" rx="6" fill="none" stroke="#121212" stroke-width="3"/>
+            <circle cx="185" cy="40" r="8" fill="none" stroke="#121212" stroke-width="2.5"/>
+            <circle cx="215" cy="40" r="8" fill="none" stroke="#121212" stroke-width="2.5"/>
+            <line x1="50" y1="70" x2="150" y2="70" stroke="#E30613" stroke-width="1.5" stroke-dasharray="4 2"/>
+            <line x1="50" y1="66" x2="50" y2="74" stroke="#E30613" stroke-width="1.5"/>
+            <line x1="150" y1="66" x2="150" y2="74" stroke="#E30613" stroke-width="1.5"/>
+            <text x="100" y="78" text-anchor="middle" fill="#E30613" font-family="Orbitron" font-size="10" font-weight="700">PITCH (p)</text>
+          </svg>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Tipo de Cadena (Hileras)</label>
+          <div class="strand-selector">
+            <button class="strand-btn active" data-strand="1" onclick="selectStrand(1)">Simplex (1x)</button>
+            <button class="strand-btn" data-strand="2" onclick="selectStrand(2)">Duplex (2x)</button>
+            <button class="strand-btn" data-strand="3" onclick="selectStrand(3)">Triplex (3x)</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="card neu-flat fade-in">
+        <div class="card-title">
+          <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="3"/><path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/></svg>
+          Datos de Engranajes
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">Dientes Pinon (N1)</label>
+            <input type="number" class="form-input" id="n1" value="17" min="11" max="120" onchange="calculateAll()">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Dientes Corona (N2)</label>
+            <input type="number" class="form-input" id="n2" value="51" min="11" max="200" onchange="calculateAll()">
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">RPM Pinon (n1)</label>
+            <input type="number" class="form-input" id="rpm" value="900" min="1" max="10000" onchange="calculateAll()">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Dist. Centros (mm)</label>
+            <input type="number" class="form-input" id="centerDist" value="500" min="50" max="5000" onchange="calculateAll()">
+          </div>
+        </div>
+        <div class="sprocket-preview" id="sprocketPreview"></div>
+      </div>
+
+      <div class="card neu-flat fade-in">
+        <div class="card-title">
+          <svg viewBox="0 0 24 24"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
+          Potencia y Carga
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">Potencia Nominal (kW)</label>
+            <input type="number" class="form-input" id="power" value="5.5" min="0.1" max="500" step="0.1" onchange="calculateAll()">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Factor Servicio (Ks)</label>
+            <input type="number" class="form-input" id="serviceFactor" value="1.4" min="1.0" max="3.0" step="0.1" onchange="calculateAll()">
+          </div>
+        </div>
+        <button class="neu-btn primary btn-full" onclick="calculateAll()">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:middle;margin-right:8px;">
+            <path d="M21 12a9 9 0 0 0-9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/><path d="M3 12a9 9 0 0 0 9 9 9.75 9.75 0 0 0 6.74-2.74L21 16"/><path d="M16 16h5v5"/>
+          </svg>
+          Calcular Transmision
+        </button>
+      </div>
+
+      <div class="card neu-flat fade-in">
+        <div class="card-title">
+          <svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="9" y1="21" x2="9" y2="9"/></svg>
+          Tabla de Factores de Servicio
+        </div>
+        <p style="font-size:0.85rem;color:var(--dark-gray);margin-bottom:12px;">Seleccione el tipo de carga para aplicar automaticamente el factor Ks:</p>
+        <div class="sf-table-container">
+          <table class="sf-table" id="sfTable">
+            <thead><tr><th>Tipo de Carga</th><th>Condicion</th><th>Ks</th></tr></thead>
+            <tbody>
+              <tr onclick="selectSF(1.0,this)"><td>Uniforme / Suave</td><td>Bombas centrifugas, ventiladores, transportadores ligeros</td><td>1.0</td></tr>
+              <tr onclick="selectSF(1.2,this)"><td>Ligera / Poco irregular</td><td>Maquinas herramienta ligeras, agitadores, mezcladores</td><td>1.2</td></tr>
+              <tr onclick="selectSF(1.4,this)"><td>Moderada / Irregular</td><td>Compresores, transportadores pesados, maquinas de impresion</td><td>1.4</td></tr>
+              <tr onclick="selectSF(1.6,this)"><td>Pesada / Impacto moderado</td><td>Trituradoras, prensas, laminadoras, gruas</td><td>1.6</td></tr>
+              <tr onclick="selectSF(1.8,this)"><td>Muy pesada / Impacto severo</td><td>Martillos, cizallas, maquinaria minera, excavadoras</td><td>1.8</td></tr>
+              <tr onclick="selectSF(2.0,this)"><td>Extrema / Impacto maximo</td><td>Maquinaria de fundicion, prensas de forja, molinos de bolas</td><td>2.0</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+    <div class="right-col">
+      <div class="card neu-flat fade-in">
+        <div class="card-title">
+          <svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
+          Resultados del Calculo
+        </div>
+        <div class="results-grid" id="resultsGrid">
+          <div class="result-item">
+            <div class="result-label">Paso Cadena (p)</div>
+            <div class="result-value" id="resPitch">--<span class="result-unit">mm</span></div>
+          </div>
+          <div class="result-item">
+            <div class="result-label">Relacion de Transmision (i)</div>
+            <div class="result-value" id="resRatio">--</div>
+          </div>
+          <div class="result-item">
+            <div class="result-label">Diametro Pinon (D1)</div>
+            <div class="result-value" id="resD1">--<span class="result-unit">mm</span></div>
+          </div>
+          <div class="result-item">
+            <div class="result-label">Diametro Corona (D2)</div>
+            <div class="result-value" id="resD2">--<span class="result-unit">mm</span></div>
+          </div>
+          <div class="result-item">
+            <div class="result-label">Dist. Centros Recomendada</div>
+            <div class="result-value" id="resRecDist">--<span class="result-unit">mm</span></div>
+          </div>
+          <div class="result-item">
+            <div class="result-label">Longitud Cadena (Lp)</div>
+            <div class="result-value" id="resLp">--<span class="result-unit">pasos</span></div>
+          </div>
+          <div class="result-item">
+            <div class="result-label">Longitud Cadena (L)</div>
+            <div class="result-value" id="resLmm">--<span class="result-unit">mm</span></div>
+          </div>
+          <div class="result-item">
+            <div class="result-label">Velocidad Cadena (v)</div>
+            <div class="result-value" id="resVel">--<span class="result-unit">m/s</span></div>
+          </div>
+          <div class="result-item">
+            <div class="result-label">Potencia de Diseno (Pd)</div>
+            <div class="result-value accent" id="resPd">--<span class="result-unit">kW</span></div>
+          </div>
+          <div class="result-item">
+            <div class="result-label">Fuerza de Traccion (F)</div>
+            <div class="result-value accent" id="resForce">--<span class="result-unit">N</span></div>
+          </div>
+        </div>
+        <div class="alert-box info" id="alertInfo">
+          <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+          <span id="alertInfoText">Ingrese los datos y presione Calcular para obtener los resultados.</span>
+        </div>
+        <div class="alert-box warning" id="alertWarning">
+          <svg viewBox="0 0 24 24"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+          <span id="alertWarningText"></span>
+        </div>
+        <div class="alert-box danger" id="alertDanger">
+          <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg>
+          <span id="alertDangerText"></span>
+        </div>
+      </div>
+
+      <div class="card neu-flat fade-in">
+        <div class="card-title">
+          <svg viewBox="0 0 24 24"><path d="M12 2.69l5.66 5.66a8 8 0 1 1-11.31 0z"/></svg>
+          Verificacion de Lubricacion
+        </div>
+        <div class="lube-grid" id="lubeGrid">
+          <div class="lube-card" data-type="I"><div class="lube-type">I</div><div class="lube-name">Manual</div><div class="lube-range">v &lt;= 4 m/s</div></div>
+          <div class="lube-card" data-type="II"><div class="lube-type">II</div><div class="lube-name">Goteo</div><div class="lube-range">4 &lt; v &lt;= 7 m/s</div></div>
+          <div class="lube-card" data-type="III"><div class="lube-type">III</div><div class="lube-name">Bano Aceite</div><div class="lube-range">7 &lt; v &lt;= 12 m/s</div></div>
+          <div class="lube-card" data-type="IV"><div class="lube-type">IV</div><div class="lube-name">Pulverizacion</div><div class="lube-range">12 &lt; v &lt;= 20 m/s</div></div>
+          <div class="lube-card" data-type="V"><div class="lube-type">V</div><div class="lube-name">Forzada</div><div class="lube-range">v &gt; 20 m/s</div></div>
+        </div>
+        <div id="lubeRecommendation" style="margin-top:16px;font-family:'Rajdhani',sans-serif;font-weight:600;font-size:0.95rem;color:var(--dark-gray);text-align:center;"></div>
+      </div>
+
+      <div class="card neu-flat fade-in">
+        <div class="card-title">
+          <svg viewBox="0 0 24 24"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/><line x1="10" y1="2" x2="10" y2="22"/></svg>
+          Formulas Aplicadas
+        </div>
+        <div class="formula-box">
+          <div class="formula-title">Longitud de Cadena (pasos)</div>
+          <div class="formula"><code>Lp = 2Cp + (N1+N2)/2 + [(N2-N1)/(2pi)]^2 / Cp</code></div>
+        </div>
+        <div class="formula-box" style="margin-top:12px;">
+          <div class="formula-title">Velocidad de Cadena</div>
+          <div class="formula"><code>v = p * N1 * n / (60 * 1000)</code> [m/s]</div>
+        </div>
+        <div class="formula-box" style="margin-top:12px;">
+          <div class="formula-title">Potencia de Diseno Corregida</div>
+          <div class="formula"><code>Pd = P * Ks</code> [kW]</div>
+        </div>
+        <div class="formula-box" style="margin-top:12px;">
+          <div class="formula-title">Fuerza de Traccion</div>
+          <div class="formula"><code>F = 1020 * P / v</code> [N]</div>
+        </div>
+      </div>
+
+      <div class="card neu-flat fade-in">
+        <div class="card-title">
+          <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+          Notas Tecnicas
+        </div>
+        <ul style="font-size:0.88rem;color:var(--dark-gray);padding-left:20px;line-height:2;">
+          <li>Numero minimo de dientes pinon: 11 (recomendado &gt;= 17 para velocidades altas)</li>
+          <li>Relacion maxima de transmision recomendada: i &lt;= 7</li>
+          <li>Distancia entre centros recomendada: 30p a 50p (optimo)</li>
+          <li>Angulo de contacto pinon: &gt;= 120 grados</li>
+          <li>Longitud de cadena debe ser numero entero de pasos (ajustar centros si es necesario)</li>
+          <li>Para cadenas multiplex, multiplicar potencia por factor de hilera (1.7 para duplex, 2.5 para triplex)</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <div class="footer">
+    <strong>EDIM SOLUCIONES</strong> | Calculadora Cadenas de Transmision ANSI/ISO<br>
+    Desarrollada bajo normas ANSI B29.1 / ISO 606 | Uso industrial profesional
+  </div>
+</div>
+<script>
+const chainData = {
+  '06B': { ansi: '35', pitch: 9.525, roller: 6.35, width: 5.72, breakLoad: 8.9, weight: 0.41 },
+  '08B': { ansi: '40', pitch: 12.700, roller: 8.51, width: 7.75, breakLoad: 17.8, weight: 0.69 },
+  '10B': { ansi: '50', pitch: 15.875, roller: 10.16, width: 9.65, breakLoad: 22.2, weight: 0.93 },
+  '12B': { ansi: '60', pitch: 19.050, roller: 12.07, width: 11.68, breakLoad: 28.9, weight: 1.23 },
+  '16B': { ansi: '80', pitch: 25.400, roller: 15.88, width: 17.02, breakLoad: 60.0, weight: 2.15 },
+  '20B': { ansi: '100', pitch: 31.750, roller: 19.05, width: 19.56, breakLoad: 95.0, weight: 3.02 },
+  '24B': { ansi: '120', pitch: 38.100, roller: 25.40, width: 25.40, breakLoad: 160.0, weight: 5.10 },
+  '28B': { ansi: '140', pitch: 44.450, roller: 27.94, width: 30.99, breakLoad: 200.0, weight: 6.92 },
+  '32B': { ansi: '160', pitch: 50.800, roller: 29.21, width: 30.99, breakLoad: 250.0, weight: 8.10 },
+  '40B': { ansi: '200', pitch: 63.500, roller: 39.37, width: 38.10, breakLoad: 355.0, weight: 13.40 },
+  '48B': { ansi: '240', pitch: 76.200, roller: 47.63, width: 47.63, breakLoad: 560.0, weight: 20.10 },
+};
+const strandFactors = { 1: 1.0, 2: 1.7, 3: 2.5 };
+let selectedChain = '16B';
+let selectedStrand = 1;
+
+function init() {
+  renderChainSelector();
+  calculateAll();
+}
+
+function renderChainSelector() {
+  const container = document.getElementById('chainSelector');
+  container.innerHTML = '';
+  for (const [iso, data] of Object.entries(chainData)) {
+    const div = document.createElement('div');
+    div.className = 'chain-option' + (iso === selectedChain ? ' active' : '');
+    div.onclick = () => selectChain(iso);
+    div.innerHTML = '<div class="chain-iso">' + iso + '</div><div class="chain-ansi">ANSI ' + data.ansi + '</div><div class="chain-pitch">' + data.pitch.toFixed(3) + ' mm</div>';
+    container.appendChild(div);
+  }
+}
+
+function selectChain(iso) {
+  selectedChain = iso;
+  renderChainSelector();
+  calculateAll();
+}
+
+function selectStrand(n) {
+  selectedStrand = n;
+  document.querySelectorAll('.strand-btn').forEach(b => {
+    b.classList.toggle('active', parseInt(b.dataset.strand) === n);
+  });
+  calculateAll();
+}
+
+function selectSF(val, row) {
+  document.getElementById('serviceFactor').value = val;
+  document.querySelectorAll('#sfTable tbody tr').forEach(r => r.classList.remove('selected'));
+  row.classList.add('selected');
+  calculateAll();
+}
+
+function calculateAll() {
+  const chain = chainData[selectedChain];
+  const p = chain.pitch;
+  const N1 = parseInt(document.getElementById('n1').value) || 17;
+  const N2 = parseInt(document.getElementById('n2').value) || 51;
+  const n1 = parseFloat(document.getElementById('rpm').value) || 900;
+  const a = parseFloat(document.getElementById('centerDist').value) || 500;
+  const P = parseFloat(document.getElementById('power').value) || 5.5;
+  const Ks = parseFloat(document.getElementById('serviceFactor').value) || 1.4;
+  const sf = strandFactors[selectedStrand];
+
+  const i = N2 / N1;
+  const D1 = p / Math.sin(Math.PI / N1);
+  const D2 = p / Math.sin(Math.PI / N2);
+  const Cp = a / p;
+  const Lp = 2 * Cp + (N1 + N2) / 2 + Math.pow((N2 - N1) / (2 * Math.PI), 2) / Cp;
+  const LpRounded = Math.ceil(Lp);
+  const Lmm = LpRounded * p;
+  const recDistMin = 30 * p;
+  const recDistMax = 50 * p;
+  const recDist = (recDistMin + recDistMax) / 2;
+  const v = (p * N1 * n1) / 60000;
+  const Pd = P * Ks;
+  const F = v > 0 ? (1020 * P) / v : 0;
+  const breakLoadTotal = chain.breakLoad * sf * 1000;
+  const safetyFactor = F > 0 ? breakLoadTotal / F : 0;
+
+  document.getElementById('resPitch').innerHTML = p.toFixed(3) + '<span class="result-unit">mm</span>';
+  document.getElementById('resRatio').textContent = i.toFixed(2) + ':1';
+  document.getElementById('resD1').innerHTML = D1.toFixed(2) + '<span class="result-unit">mm</span>';
+  document.getElementById('resD2').innerHTML = D2.toFixed(2) + '<span class="result-unit">mm</span>';
+  document.getElementById('resRecDist').innerHTML = recDist.toFixed(1) + '<span class="result-unit">mm</span> (' + (recDist/p).toFixed(1) + 'p)';
+  document.getElementById('resLp').innerHTML = LpRounded + '<span class="result-unit">pasos</span> (' + Lp.toFixed(2) + ' calc)';
+  document.getElementById('resLmm').innerHTML = Lmm.toFixed(1) + '<span class="result-unit">mm</span>';
+
+  const velEl = document.getElementById('resVel');
+  velEl.innerHTML = v.toFixed(2) + '<span class="result-unit">m/s</span>';
+  velEl.className = 'result-value' + (v > 12 ? (v > 20 ? ' danger' : ' warning') : '');
+
+  document.getElementById('resPd').innerHTML = Pd.toFixed(2) + '<span class="result-unit">kW</span>';
+  document.getElementById('resForce').innerHTML = F.toFixed(1) + '<span class="result-unit">N</span>';
+
+  renderSprockets(N1, N2, D1, D2);
+
+  const alertInfo = document.getElementById('alertInfo');
+  const alertWarn = document.getElementById('alertWarning');
+  const alertDanger = document.getElementById('alertDanger');
+
+  alertInfo.classList.remove('show');
+  alertWarn.classList.remove('show');
+  alertDanger.classList.remove('show');
+
+  let messages = [];
+  if (N1 < 11) messages.push('Numero de dientes pinon por debajo del minimo (11).');
+  if (i > 7) messages.push('Relacion de transmision excede el limite recomendado (7:1).');
+  if (a < 30 * p) messages.push('Distancia entre centros por debajo del minimo recomendado (30p).');
+  if (a > 80 * p) messages.push('Distancia entre centros excede el maximo recomendado (80p).');
+
+  if (messages.length > 0) {
+    alertWarn.querySelector('#alertWarningText').innerHTML = messages.join('<br>');
+    alertWarn.classList.add('show');
+  }
+
+  if (v > 12) {
+    alertDanger.querySelector('#alertDangerText').textContent = 'Velocidad de cadena (' + v.toFixed(2) + ' m/s) excede el limite recomendado para lubricacion manual. Se requiere lubricacion forzada o por bano de aceite.';
+    alertDanger.classList.add('show');
+  }
+
+  if (safetyFactor < 6 && safetyFactor > 0) {
+    alertDanger.querySelector('#alertDangerText').textContent = 'Factor de seguridad (' + safetyFactor.toFixed(1) + ') por debajo del recomendado (>= 6). Considere una cadena de mayor capacidad.';
+    alertDanger.classList.add('show');
+  }
+
+  updateLubrication(v);
+}
+
+function renderSprockets(N1, N2, D1, D2) {
+  const container = document.getElementById('sprocketPreview');
+  const maxR = 70;
+  const r1 = Math.min(maxR, D1 / 2 * 0.8);
+  const r2 = Math.min(maxR, D2 / 2 * 0.8);
+
+  function sprocketSVG(N, r, label, val) {
+    const pts = [];
+    for (let i = 0; i < N; i++) {
+      const ang = (2 * Math.PI * i) / N - Math.PI / 2;
+      pts.push((r * Math.cos(ang)) + ',' + (r * Math.sin(ang)));
+    }
+    const path = 'M ' + pts.join(' L ') + ' Z';
+    let circles = '';
+    for (let i = 0; i < N; i++) {
+      const ang = (2 * Math.PI * i) / N - Math.PI / 2;
+      const x = r * Math.cos(ang);
+      const y = r * Math.sin(ang);
+      circles += '<circle cx="' + x + '" cy="' + y + '" r="3" fill="#E30613"/>';
+    }
+    return '<div class="sprocket-item"><svg width="' + (r*2+20) + '" height="' + (r*2+20) + '" viewBox="-' + (r+10) + ' -' + (r+10) + ' ' + (r*2+20) + ' ' + (r*2+20) + '"><circle cx="0" cy="0" r="' + (r*0.35) + '" fill="none" stroke="#D9D9D9" stroke-width="2"/><path d="' + path + '" fill="none" stroke="#3A3A3A" stroke-width="2.5" stroke-linejoin="round"/>' + circles + '<circle cx="0" cy="0" r="4" fill="#121212"/></svg><div class="sprocket-label">' + label + '</div><div class="sprocket-value">' + N + ' dientes / ' + val.toFixed(1) + ' mm</div></div>';
+  }
+
+  container.innerHTML = sprocketSVG(N1, r1, 'Pinon (N1)', D1) + sprocketSVG(N2, r2, 'Corona (N2)', D2);
+}
+
+function updateLubrication(v) {
+  const cards = document.querySelectorAll('.lube-card');
+  cards.forEach(c => c.classList.remove('active'));
+  let type = '', name = '';
+  if (v <= 4) { type = 'I'; name = 'Lubricacion Manual o Periodica'; }
+  else if (v <= 7) { type = 'II'; name = 'Lubricacion por Goteo'; }
+  else if (v <= 12) { type = 'III'; name = 'Lubricacion por Bano de Aceite'; }
+  else if (v <= 20) { type = 'IV'; name = 'Lubricacion por Pulverizacion'; }
+  else { type = 'V'; name = 'Lubricacion Forzada con Bomba'; }
+  const activeCard = document.querySelector('.lube-card[data-type="' + type + '"]');
+  if (activeCard) activeCard.classList.add('active');
+  document.getElementById('lubeRecommendation').innerHTML = '<span style="color:var(--accent);">Tipo ' + type + ':</span> ' + name;
+}
+
+window.addEventListener('DOMContentLoaded', init);
+</script>
+</body>
+</html>
