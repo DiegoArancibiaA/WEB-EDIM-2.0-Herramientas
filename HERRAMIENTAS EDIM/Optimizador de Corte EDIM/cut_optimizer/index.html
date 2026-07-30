@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Optimizador de Corte Pro</title>
+<link rel="stylesheet" href="assets/css/main.css">
+<link rel="stylesheet" href="assets/css/neumorphism.css">
+<link rel="stylesheet" href="assets/css/dark-mode.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+</head>
+<body class="light-mode">
+<div id="loadingOverlay" class="loading-overlay"><div class="loading-spinner"></div><p id="loadingText">Inicializando...</p></div>
+<div id="notificationContainer" class="notification-container"></div>
+<div id="modalContainer" class="modal-container"></div>
+
+<header class="app-header">
+<div class="header-left">
+<div class="logo">
+<img src="assets/img/logo-edim.png" alt="EDIM Soluciones" style="height:40px; margin-right:12px;">
+<div class="logo-text">
+<h1>Optimizador de Corte</h1>
+<span>Edición Profesional</span>
+</div>
+</div>
+</div>
+<div class="header-center">
+<div class="project-info-bar">
+<span id="projectNameDisplay">Sin proyecto activo</span>
+<span id="projectClientDisplay" class="client-tag"></span>
+</div>
+</div>
+<div class="header-right">
+<button class="neu-btn icon-btn" id="btnUndo" title="Deshacer">
+<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 7v6h6"/><path d="M21 17a9 9 0 00-9-9 9 9 0 00-6 2.3L3 13"/></svg>
+</button>
+<button class="neu-btn icon-btn" id="btnRedo" title="Rehacer">
+<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 7v6h-6"/><path d="M3 17a9 9 0 019-9 9 9 0 016 2.3L21 13"/></svg>
+</button>
+<button class="neu-btn icon-btn" id="btnDarkMode" title="Modo oscuro">
+<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/></svg>
+</button>
+<button class="neu-btn icon-btn" id="btnSettings" title="Configuración">
+<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 01-2.83 2.83l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83-2.83l.06-.06A1.65 1.65 0 004.68 15a1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 012.83-2.83l.06.06A1.65 1.65 0 009 4.68a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 2.83l-.06.06A1.65 1.65 0 0019.4 9a1.65 1.65 0 001.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z"/></svg>
+</button>
+</div>
+</header>
+
+<div class="app-layout">
+<aside class="panel panel-left" id="leftPanel">
+<div class="panel-header"><h2>
+<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="display:inline;vertical-align:middle"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
+ Datos del Proyecto</h2></div>
+<div class="section project-info">
+<div class="form-group"><label>Nombre del Proyecto</label><input type="text" id="projectName" class="neu-input" placeholder="Ej: Mueble Cocina L-12"></div>
+<div class="form-row">
+<div class="form-group"><label>Cliente</label><input type="text" id="projectClient" class="neu-input" placeholder="Cliente"></div>
+<div class="form-group"><label>Empresa</label><input type="text" id="projectCompany" class="neu-input" placeholder="Empresa"></div>
+</div>
+<div class="form-row">
+<div class="form-group"><label>Operador</label><input type="text" id="projectOperator" class="neu-input" placeholder="Operador"></div>
+<div class="form-group"><label>Fecha</label><input type="date" id="projectDate" class="neu-input"></div>
+</div>
+<div class="form-group"><label>Material</label>
+<select id="projectMaterial" class="neu-input">
+<option value="aluminio">Aluminio</option><option value="acero">Acero</option><option value="inox">Acero Inoxidable</option>
+<option value="acrilico">Acrílico</option><option value="pvc">PVC</option><option value="madera">Madera / Melamina</option>
+<option value="mdf">MDF</option><option value="vidrio">Vidrio</option><option value="otro">Otro</option>
+</select>
+</div>
+<div class="form-row">
+<div class="form-group"><label>Espesor (mm)</label><input type="number" id="projectThickness" class="neu-input" value="18" min="0.1" step="0.1"></div>
+<div class="form-group"><label>Unidad</label>
+<select id="projectUnit" class="neu-input">
+<option value="mm">Milímetros</option><option value="cm">Centímetros</option><option value="m">Metros</option>
+</select>
+</div>
+</div>
+<div class="form-group"><label>Observaciones</label><textarea id="projectNotes" class="neu-input" rows="2"></textarea></div>
+</div>
+
+<div class="section">
+<div class="section-header"><h3>
+<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="display:inline;vertical-align:middle"><rect x="2" y="7" width="20" height="14" rx="2" ry="2"/><path d="M16 21V5a2 2 0 00-2-2h-4a2 2 0 00-2 2v16"/></svg>
+ Placas Disponibles</h3><button class="neu-btn sm" id="btnAddPlate">+ Agregar</button></div>
+<div class="table-container">
+<table class="neu-table" id="platesTable">
+<thead><tr><th>Cant.</th><th>Largo</th><th>Ancho</th><th>Costo</th><th></th></tr></thead>
+<tbody id="platesTableBody"></tbody>
+</table>
+</div>
+</div>
+
+<div class="section">
+<div class="section-header"><h3>
+<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="display:inline;vertical-align:middle"><rect x="4" y="4" width="6" height="6" rx="1"/><rect x="14" y="4" width="6" height="6" rx="1"/><rect x="4" y="14" width="6" height="6" rx="1"/><rect x="14" y="14" width="6" height="6" rx="1"/></svg>
+ Piezas a Cortar</h3><div class="section-actions">
+<button class="neu-btn sm" id="btnImportPieces">Importar</button>
+<button class="neu-btn sm accent" id="btnAddPiece">+ Agregar</button>
+</div></div>
+<div class="table-container">
+<table class="neu-table" id="piecesTable">
+<thead><tr><th>Cant.</th><th>Nombre</th><th>Largo</th><th>Ancho</th><th>Rot.</th><th></th></tr></thead>
+<tbody id="piecesTableBody"></tbody>
+</table>
+</div>
+</div>
+
+<div class="section">
+<div class="section-header"><h3>
+<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="display:inline;vertical-align:middle"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 01-2.83 2.83l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83-2.83l.06-.06A1.65 1.65 0 004.68 15a1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 012.83-2.83l.06.06A1.65 1.65 0 009 4.68a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 2.83l-.06.06A1.65 1.65 0 0019.4 9a1.65 1.65 0 001.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z"/></svg>
+ Config. Optimización</h3></div>
+<div class="form-row">
+<div class="form-group"><label>Kerf (mm)</label><input type="number" id="optKerf" class="neu-input" value="3.5" min="0" step="0.1"></div>
+<div class="form-group"><label>Separación (mm)</label><input type="number" id="optSpacing" class="neu-input" value="2" min="0" step="0.5"></div>
+</div>
+<div class="form-row">
+<div class="form-group"><label>Margen Ext. (mm)</label><input type="number" id="optMarginExt" class="neu-input" value="5" min="0" step="1"></div>
+<div class="form-group"><label>Margen Int. (mm)</label><input type="number" id="optMarginInt" class="neu-input" value="0" min="0" step="1"></div>
+</div>
+<div class="form-group"><label>Modo</label>
+<select id="optMode" class="neu-input">
+<option value="fast">Rápida (First Fit)</option><option value="balanced" selected>Equilibrada (Best Fit)</option><option value="quality">Máxima Calidad</option>
+</select>
+</div>
+<div class="form-group"><label>Algoritmo</label>
+<select id="optAlgorithm" class="neu-input">
+<option value="auto" selected>Auto (Mejor resultado)</option><option value="ffd">First Fit Decreasing</option><option value="bestfit">Best Fit</option>
+<option value="maxrects">Max Rects</option><option value="guillotine">Guillotine Cutting</option><option value="skyline">Skyline</option>
+</select>
+</div>
+<div class="form-check"><input type="checkbox" id="optAllowRotation" checked><label for="optAllowRotation">Permitir rotación automática</label></div>
+</div>
+
+<div class="section action-buttons">
+<button class="neu-btn primary large" id="btnOptimize">
+<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="display:inline;vertical-align:middle"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+ Optimizar Corte</button>
+<div class="btn-row">
+<button class="neu-btn" id="btnSaveProject">
+<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="display:inline;vertical-align:middle"><path d="M19 21H5a2 2 0 01-2-2V5a2 2 0 012-2h11l5 5v11a2 2 0 01-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
+ Guardar</button>
+<button class="neu-btn" id="btnLoadProject">
+<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="display:inline;vertical-align:middle"><path d="M22 19a2 2 0 01-2 2H4a2 2 0 01-2-2V5a2 2 0 012-2h5l2 3h9a2 2 0 012 2z"/></svg>
+ Abrir</button>
+<button class="neu-btn" id="btnNewProject">
+<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="display:inline;vertical-align:middle"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="12" y1="18" x2="12" y2="12"/><line x1="9" y1="15" x2="15" y2="15"/></svg>
+ Nuevo</button>
+</div>
+</div>
+</aside>
+
+<main class="panel panel-center" id="centerPanel">
+<div class="canvas-toolbar">
+<div class="toolbar-group">
+<button class="neu-btn icon-btn" id="btnZoomIn">+</button>
+<span id="zoomLevel" class="zoom-label">100%</span>
+<button class="neu-btn icon-btn" id="btnZoomOut">-</button>
+<button class="neu-btn icon-btn" id="btnZoomFit">
+<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 3 21 3 21 9"/><polyline points="9 21 3 21 3 15"/><line x1="21" y1="3" x2="14" y2="10"/><line x1="3" y1="21" x2="10" y2="14"/></svg>
+</button>
+</div>
+<div class="toolbar-group">
+<button class="neu-btn icon-btn active" id="btnToggleGrid">
+<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
+</button>
+<button class="neu-btn icon-btn" id="btnToggleLabels">
+<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 6v6l4 2"/><circle cx="12" cy="12" r="10"/></svg>
+</button>
+<button class="neu-btn icon-btn" id="btnToggleRulers">
+<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 21H3V3"/><line x1="7" y1="3" x2="7" y2="21"/><line x1="11" y1="3" x2="11" y2="21"/><line x1="15" y1="3" x2="15" y2="21"/><line x1="19" y1="3" x2="19" y2="21"/></svg>
+</button>
+</div>
+<div class="toolbar-group">
+<button class="neu-btn icon-btn" id="btnPrevPlate">
+<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg>
+</button>
+<span id="plateIndicator" class="plate-label">Placa 1 / 1</span>
+<button class="neu-btn icon-btn" id="btnNextPlate">
+<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
+</button>
+<button class="neu-btn icon-btn" id="btnViewAll">
+<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="2" width="20" height="20" rx="2.18"/><line x1="8" y1="2" x2="8" y2="22"/><line x1="16" y1="2" x2="16" y2="22"/><line x1="2" y1="8" x2="22" y2="8"/><line x1="2" y1="16" x2="22" y2="16"/></svg>
+</button>
+</div>
+<div class="toolbar-group">
+<button class="neu-btn icon-btn" id="btnExportImage">
+<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+</button>
+<button class="neu-btn icon-btn" id="btnPrint">
+<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 6 2 18 2 18 9"/><path d="M18 9H6"/><path d="M18 5v4H6V5"/><rect x="6" y="14" width="12" height="8"/><line x1="6" y1="18" x2="18" y2="18"/></svg>
+</button>
+</div>
+</div>
+<div class="canvas-wrapper">
+<div class="ruler-top" id="rulerTop"></div>
+<div class="ruler-left" id="rulerLeft"></div>
+<canvas id="cutCanvas" class="cut-canvas"></canvas>
+<div class="minimap" id="minimap"><canvas id="minimapCanvas"></canvas></div>
+<div class="coordinates-display" id="coordinatesDisplay">X: 0 | Y: 0</div>
+</div>
+<div class="canvas-tooltip" id="canvasTooltip"></div>
+</main>
+
+<aside class="panel panel-right" id="rightPanel">
+<div class="panel-header"><h2>
+<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="display:inline;vertical-align:middle"><path d="M21 12v-2a5 5 0 00-5-5H8a5 5 0 00-5 5v2"/><circle cx="12" cy="16" r="5"/><line x1="12" y1="11" x2="12" y2="16"/><line x1="9" y1="13" x2="12" y2="16"/><line x1="15" y1="13" x2="12" y2="16"/></svg>
+ Resultados</h2></div>
+<div class="section stats-section">
+<div class="stats-grid">
+<div class="stat-card"><div class="stat-icon" style="background:#e5393520;color:#e53935">
+<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="7" width="20" height="14" rx="2" ry="2"/><path d="M16 21V5a2 2 0 00-2-2h-4a2 2 0 00-2 2v16"/></svg>
+</div><div class="stat-info"><span class="stat-value" id="statPlatesUsed">0</span><span class="stat-label">Placas Usadas</span></div></div>
+<div class="stat-card"><div class="stat-icon" style="background:#4caf5020;color:#4caf50">
+<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
+</div><div class="stat-info"><span class="stat-value" id="statEfficiency">0%</span><span class="stat-label">Aprovechamiento</span></div></div>
+<div class="stat-card"><div class="stat-icon" style="background:#ff980020;color:#ff9800">
+<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+</div><div class="stat-info"><span class="stat-value" id="statWaste">0%</span><span class="stat-label">Desperdicio</span></div></div>
+<div class="stat-card"><div class="stat-icon" style="background:#2196f320;color:#2196f3">
+<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="4" y="4" width="6" height="6" rx="1"/><rect x="14" y="4" width="6" height="6" rx="1"/><rect x="4" y="14" width="6" height="6" rx="1"/><rect x="14" y="14" width="6" height="6" rx="1"/></svg>
+</div><div class="stat-info"><span class="stat-value" id="statPieces">0</span><span class="stat-label">Piezas</span></div></div>
+</div>
+</div>
+
+<div class="section">
+<h3>Resumen Detallado</h3>
+<div class="detail-stats">
+<div class="detail-row"><span>Superficie Total:</span><span id="detailTotalArea">0 mm²</span></div>
+<div class="detail-row"><span>Superficie Usada:</span><span id="detailUsedArea">0 mm²</span></div>
+<div class="detail-row"><span>Superficie Desperdiciada:</span><span id="detailWasteArea">0 mm²</span></div>
+<div class="detail-row"><span>Longitud Total de Corte:</span><span id="detailCutLength">0 mm</span></div>
+<div class="detail-row"><span>Cantidad de Cortes:</span><span id="detailCutCount">0</span></div>
+<div class="detail-row"><span>Placas Sobrantes:</span><span id="detailLeftoverPlates">0</span></div>
+<div class="detail-row"><span>Costo Estimado:</span><span id="detailCost">$0.00</span></div>
+<div class="detail-row"><span>Tiempo de Cálculo:</span><span id="detailTime">0.00s</span></div>
+</div>
+</div>
+
+<div class="section">
+<div class="section-header"><h3>Lista de Cortes</h3><button class="neu-btn sm" id="btnExportCutList">
+<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="display:inline;vertical-align:middle"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+ Exportar</button></div>
+<div class="table-container cut-list-container">
+<table class="neu-table" id="cutListTable">
+<thead><tr><th>#</th><th>Código</th><th>Pieza</th><th>Dim.</th><th>Placa</th></tr></thead>
+<tbody id="cutListTableBody"></tbody>
+</table>
+</div>
+</div>
+
+<div class="section">
+<h3>Gráficos</h3>
+<div class="chart-container"><canvas id="efficiencyChart"></canvas></div>
+<div class="chart-container"><canvas id="materialChart"></canvas></div>
+</div>
+
+<div class="section action-buttons">
+<button class="neu-btn primary" id="btnGeneratePDF">
+<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="display:inline;vertical-align:middle"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="12" y1="18" x2="12" y2="12"/><line x1="9" y1="15" x2="15" y2="15"/></svg>
+ Generar PDF</button>
+<div class="btn-row">
+<button class="neu-btn sm" id="btnExportExcel">Excel</button>
+<button class="neu-btn sm" id="btnExportCSV">CSV</button>
+<button class="neu-btn sm" id="btnExportJSON">JSON</button>
+</div>
+<div class="btn-row">
+<button class="neu-btn sm" id="btnExportPNG">PNG</button>
+<button class="neu-btn sm" id="btnExportSVG">SVG</button>
+</div>
+</div>
+</aside>
+</div>
+
+<!-- Pie de página con créditos -->
+<footer style="text-align:center; padding:12px 0; font-size:13px; color:#888; border-top:1px solid #e0e0e0; margin-top:8px;">
+  Desarrollado y diseñado por <strong>EDIM Soluciones</strong>
+</footer>
+
+<script src="assets/js/app.js"></script>
+<script src="assets/js/ui.js"></script>
+<script src="assets/js/optimizer.js"></script>
+<script src="assets/js/canvas.js"></script>
+<script src="assets/js/pdf.js"></script>
+<script src="assets/js/import-export.js"></script>
+<script src="assets/js/charts.js"></script>
+<script src="assets/js/database.js"></script>
+</body>
+</html>

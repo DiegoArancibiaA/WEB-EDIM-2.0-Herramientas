@@ -1,0 +1,935 @@
+<!DOCTYPE html>
+<html>
+
+<!-- Mirrored from geargenerator.com/ by HTTrack Website Copier/3.x [XR&CO'2014], Thu, 16 Jul 2026 13:56:43 GMT -->
+<head>
+		<meta http-equiv="content-type" content="text/html;charset=utf-8">
+		<meta name="description" content="Involute spur gear generator and simulator" />
+		<meta name="keywords" content="Gear generator, simulator, geargenerator, lasercut, cad, cnc, gear design, making gears, autocad, dxf, download dxf, download autocad, html, css, javascript, svg, download, free" />
+		<meta name="author" content="Abel Vincze" />
+		<meta property="og:url" content="index.html" />
+		<meta property="og:title" content="Involute spur gear generator and simulator" />
+		<meta property="og:description" content="Gear Generator is a tool for creating involute spur gears and download them in SVG format. In addition it let you compose full gear layouts with connetcted gears to design multiple gears system with control of the input/output ratio and rotation speed. Gears can be animated with various speed to demonstrate working mechanism" />
+		<meta property="og:image" content="shareimage.jpg" />
+		<link rel="canonical" href="index.html" />
+		<title>GENERADOR DE ENGRANAJE</title>
+		<script type="text/javascript" src="jquery-1.11.1.min.js"></script>
+		<script type="text/javascript" src="jquery.cookie.js"></script>
+		<script type="text/javascript" src="gg_min.js"></script>
+		<link href='geargenerator.css' rel='stylesheet' type='text/css'>
+
+		<!-- html2canvas para captura de pantalla -->
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+
+		<!-- jsPDF y jsPDF-AutoTable para generar la ficha tecnica en PDF -->
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/4.0.0/jspdf.umd.min.js"></script>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/5.0.8/jspdf.plugin.autotable.min.js"></script>
+	</head>
+	<script>
+if (window.top !== window.self) {
+  document.write(
+    '<div style="font-family:sans-serif;padding:40px;text-align:center;">' +
+    '<h2>This is GearGenerator.com</h2>' +
+    '<p>This site is being displayed inside another website without permission.</p>' +
+    '<p><a href="http://geargenerator.com/" target="_top" ' +
+    'style="font-size:20px;">Click here to visit the real GearGenerator.com</a></p>' +
+    '</div>'
+  );
+  document.execCommand && document.execCommand('Stop');
+  window.stop && window.stop();
+}
+</script>
+	<body class="col1">
+		<div id="screencontainer">
+			<div id="screen"></div>
+			<div id="shareblock">
+				<label for="URL" id="sharetitle">URL:</label>
+				<input type="text" id="URL">
+				<button class="sharebutton" onclick=""><svg width="30" height="22" viewBox="0 1 30 22" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xml:space="preserve" xmlns:serif="http://www.serif.com/" style="fill-rule:evenodd;clip-rule:evenodd;stroke-linejoin:round;stroke-miterlimit:2;">     <g transform="matrix(1,0,0,1,-394.483,-191)">         <path class="gearicon" d="M412,199L412,196L418,202L412,208L412,205L406,205C406,205 402,205 402,209C402,209 401,199 410,199L412,199Z"/>     </g> </svg></button>
+			</div>
+		</div>
+		<div id="screenborder"></div>
+		<div id="panel" class="planetinput">
+			<h1 id="title">GENERADOR DE ENGRANAJE</h1>
+			<p id="apptitle" class="title">Generador</p><p class="title">Engranaje</p>
+			<div id="animpanel">
+				<label class="h2">Animacion:</label>
+				<button onclick="_(2,4,0)">Iniciar/Detener</button><button class="first" onclick="_(2,4,1)">Congelar</button><button class="last" onclick="_(2,4,2)">Reiniciar</button><br>
+				<label for="RPM">Velocidad (RPM)*:</label>
+				<input type="text" id="RPM" value="6" class="unitless"><button class="first" onclick="_(2,13,0)">–</button><button class="last" onclick="_(2,13,1)">+</button><button onclick="_(2,13,2)">Invertir</button><br>
+				<span class="rem">* Shift + Enter: Establecer RPM del engranaje seleccionado</span>
+			</div>
+			<div id="gearlist">
+				<label class="h2">Engranajes:</label>
+				<button class="EV" onclick="_(2,25)" title="Agregar un nuevo engranaje conectado al seleccionado">Agregar Nuevo</button><button class="EV first" onclick="_(2,26)" title="Eliminar engranaje seleccionado y todos los engranajes hijos">Eliminar</button><button onclick="clearAll()" class="last" title="Limpiar todo y comenzar con un unico engranaje predeterminado">Limpiar</button><br>
+				<ul id="gearselector"></ul>
+				<label for="theme">Visibilidad:</label>
+				<button id="VS0" class="EV first VS radio" onclick="_(2,27,0)" title="Todas las capas son visibles">Todo</button><button id="VS1" class="EV next VS radio" onclick="_(2,27,1)" title="Solo la capa del objeto seleccionado">Misma capa</button><button id="VS2" class="EV last VS radio" onclick="_(2,27,2)" title="Solo el objeto seleccionado">Objeto</button><br>
+				<label class="h2">Tipo de engranaje:</label>
+				<button id="typegear" class="first radio selected geartype" onclick="_(2,15,0)" title="Engranaje Recto"><svg width="40px" height="32px" viewBox="0 0 40 32" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xml:space="preserve" xmlns:serif="http://www.serif.com/" style="fill-rule:evenodd;clip-rule:evenodd;stroke-linejoin:round;stroke-miterlimit:2;"><path class="gearicon" d="M20,2c7.725,0 14,6.275 14,14c0,7.725 -6.275,14 -14,14c-7.725,0 -14,-6.275 -14,-14c0,-7.725 6.275,-14 14,-14Zm0,2c6.625,0 12,5.375 12,12c0,6.625 -5.375,12 -12,12c-6.625,0 -12,-5.375 -12,-12c0,-6.625 5.375,-12 12,-12Zm-0.296,12l-1.267,1.267c-0.079,0.083 -0.079,0.212 0,0.296c0.084,0.079 0.213,0.079 0.296,-0l1.267,-1.267l1.267,1.267c0.083,0.079 0.212,0.079 0.296,-0c0.079,-0.084 0.079,-0.213 -0,-0.296l-1.267,-1.267l1.267,-1.267c0.079,-0.083 0.079,-0.212 -0,-0.295c-0.084,-0.08 -0.213,-0.08 -0.296,-0l-1.267,1.266l-1.267,-1.266c-0.083,-0.08 -0.212,-0.08 -0.296,-0c-0.079,0.083 -0.079,0.212 0,0.295l1.267,1.267Z"/></svg></button><button id="typeinternal" class="next radio geartype" onclick="_(2,15,1)" title="Engranaje Interno"><svg width="40px" height="32px" viewBox="0 0 40 32" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xml:space="preserve" xmlns:serif="http://www.serif.com/" style="fill-rule:evenodd;clip-rule:evenodd;stroke-linejoin:round;stroke-miterlimit:2;"><path class="gearicon" d="M20,0c8.829,0 16,7.171 16,16c0,8.829 -7.171,16 -16,16c-8.829,0 -16,-7.171 -16,-16c-0,-8.829 7.171,-16 16,-16Zm-0,0.833c8.371,0 15.167,6.796 15.167,15.167c-0,8.371 -6.796,15.167 -15.167,15.167c-8.371,-0 -15.167,-6.796 -15.167,-15.167c0,-8.371 6.796,-15.167 15.167,-15.167Zm-0,3.167c6.625,0 12,5.375 12,12c-0,6.625 -5.375,12 -12,12c-6.625,0 -12,-5.375 -12,-12c-0,-6.625 5.375,-12 12,-12Zm-0,2c5.521,0 10,4.479 10,10c-0,5.521 -4.479,10 -10,10c-5.521,0 -10,-4.479 -10,-10c-0,-5.521 4.479,-10 10,-10Zm-0.296,10l-1.267,1.267c-0.079,0.083 -0.079,0.212 0,0.296c0.084,0.079 0.213,0.079 0.296,-0l1.267,-1.267l1.267,1.267c0.083,0.079 0.212,0.079 0.295,-0c0.08,-0.084 0.08,-0.213 0,-0.296l-1.266,-1.267l1.266,-1.267c0.08,-0.083 0.08,-0.212 0,-0.295c-0.083,-0.08 -0.212,-0.08 -0.295,-0l-1.267,1.266l-1.267,-1.266c-0.083,-0.08 -0.212,-0.08 -0.296,-0c-0.079,0.083 -0.079,0.212 0,0.295l1.267,1.267Z"/></svg></button><button id="typechain" class="next radio geartype" onclick="_(2,15,2)" title="Conjunto de Rueda de Cadena"><svg width="40px" height="32px" viewBox="0 0 40 32" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xml:space="preserve" xmlns:serif="http://www.serif.com/" style="fill-rule:evenodd;clip-rule:evenodd;stroke-linejoin:round;stroke-miterlimit:2;"><path class="gearicon" d="M14.88,27.701l19.042,-4.443c0.03,-0.004 0.054,-0.008 0.084,-0.016c3.296,-0.76 5.759,-3.717 5.759,-7.242c-0,-3.534 -2.471,-6.494 -5.776,-7.246l-19.25,-4.488c-0.004,-0 -0.012,-0 -0.017,-0.004c-0.809,-0.171 -1.627,-0.262 -2.487,-0.262c-6.623,0 -12,5.377 -12,12c0,6.623 5.377,12 12,12c0.91,0 1.794,-0.104 2.645,-0.299Zm-2.645,-21.334c5.315,-0 9.634,4.318 9.634,9.633c-0,5.315 -4.319,9.633 -9.634,9.633c-5.315,0 -9.633,-4.318 -9.633,-9.633c0,-5.315 4.318,-9.633 9.633,-9.633Zm5.494,0.726l14.728,3.434c-2.882,0.162 -5.174,2.55 -5.174,5.473c0,2.919 2.284,5.307 5.161,5.473l-14.715,3.434c2.981,-1.844 4.97,-5.145 4.97,-8.907c-0,-3.762 -1.989,-7.059 -4.97,-8.907Zm15.035,4.256c2.566,0 4.651,2.085 4.651,4.651c-0,2.566 -2.085,4.651 -4.651,4.651c-2.566,-0 -4.651,-2.085 -4.651,-4.651c0,-2.566 2.085,-4.651 4.651,-4.651Zm0.021,4.356l-1.263,-1.262c-0.083,-0.079 -0.211,-0.079 -0.294,-0c-0.079,0.083 -0.079,0.212 -0,0.295l1.262,1.262l-1.262,1.262c-0.079,0.083 -0.079,0.212 -0,0.295c0.083,0.079 0.211,0.079 0.294,0l1.263,-1.262l1.262,1.262c0.079,0.079 0.212,0.079 0.295,0c0.079,-0.083 0.079,-0.212 -0,-0.295l-1.262,-1.262l1.262,-1.262c0.079,-0.083 0.079,-0.212 -0,-0.295c-0.083,-0.079 -0.216,-0.079 -0.295,-0l-1.262,1.262Zm-21.052,0.295l-1.262,1.262c-0.079,0.083 -0.079,0.212 -0,0.295c0.083,0.079 0.211,0.079 0.294,0l1.263,-1.262l1.262,1.262c0.083,0.079 0.212,0.079 0.295,0c0.079,-0.083 0.079,-0.212 -0,-0.295l-1.263,-1.262l1.263,-1.262c0.079,-0.083 0.079,-0.212 -0,-0.295c-0.083,-0.079 -0.212,-0.079 -0.295,-0l-1.262,1.262l-1.263,-1.262c-0.083,-0.079 -0.211,-0.079 -0.294,-0c-0.079,0.083 -0.079,0.212 -0,0.295l1.262,1.262Z"/></svg></button><button id="typeplanetary" class="last radio geartype" onclick="_(2,15,3)" title="Conjunto Planetario"><svg width="40px" height="32px" viewBox="0 0 40 32" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xml:space="preserve" xmlns:serif="http://www.serif.com/" style="fill-rule:evenodd;clip-rule:evenodd;stroke-linejoin:round;stroke-miterlimit:2;"><path class="gearicon" d="M20,0c8.829,0 16,7.171 16,16c0,8.829 -7.171,16 -16,16c-8.829,0 -16,-7.171 -16,-16c0,-8.829 7.171,-16 16,-16Zm-0,0.833c8.371,0 15.167,6.796 15.167,15.167c-0,8.371 -6.796,15.167 -15.167,15.167c-8.371,-0 -15.167,-6.796 -15.167,-15.167c-0,-8.371 6.796,-15.167 15.167,-15.167Zm-0,1.167c7.725,0 14,6.275 14,14c0,7.725 -6.275,14 -14,14c-7.725,0 -14,-6.275 -14,-14c0,-7.725 6.275,-14 14,-14Zm3.863,19.838c0.283,1.145 1.016,2.175 2.116,2.808c0.538,0.312 1.117,0.5 1.7,0.571c-2.079,1.737 -4.758,2.783 -7.679,2.783c-2.921,0 -5.6,-1.046 -7.679,-2.783c0.583,-0.071 1.162,-0.259 1.7,-0.571c1.1,-0.633 1.833,-1.663 2.117,-2.808c1.108,0.733 2.437,1.162 3.862,1.162c1.425,0 2.754,-0.429 3.863,-1.162Zm-9.934,-2.355c0.004,0.009 0.013,0.021 0.017,0.029c0.679,1.196 0.267,2.717 -0.925,3.405c-1.192,0.687 -2.725,0.279 -3.413,-0.917c-0.691,-1.196 -0.279,-2.725 0.913,-3.417c1.192,-0.683 2.712,-0.283 3.408,0.9Zm12.125,0.03c0.004,-0.009 0.013,-0.021 0.017,-0.03c0.696,-1.183 2.217,-1.583 3.408,-0.9c1.192,0.692 1.604,2.221 0.913,3.417c-0.688,1.196 -2.221,1.604 -3.413,0.917c-1.191,-0.688 -1.604,-2.209 -0.925,-3.405Zm1.804,1.196l-0.912,0.913c-0.083,0.079 -0.083,0.212 -0,0.296c0.079,0.079 0.212,0.079 0.296,-0l0.912,-0.917l0.913,0.917c0.079,0.079 0.212,0.079 0.296,-0c0.079,-0.084 0.079,-0.217 -0,-0.296l-0.917,-0.913l0.917,-0.912c0.079,-0.084 0.079,-0.217 -0,-0.296c-0.084,-0.083 -0.217,-0.083 -0.296,-0l-0.913,0.912l-0.912,-0.912c-0.084,-0.083 -0.217,-0.083 -0.296,-0c-0.083,0.079 -0.083,0.212 -0,0.296l0.912,0.912Zm-16.304,0l-0.916,0.913c-0.08,0.079 -0.08,0.212 -0,0.296c0.083,0.079 0.216,0.079 0.295,-0l0.913,-0.917l0.912,0.917c0.084,0.079 0.217,0.079 0.296,-0c0.084,-0.084 0.084,-0.217 0,-0.296l-0.912,-0.913l0.912,-0.912c0.084,-0.084 0.084,-0.217 0,-0.296c-0.079,-0.083 -0.212,-0.083 -0.296,-0l-0.912,0.912l-0.913,-0.912c-0.079,-0.083 -0.212,-0.083 -0.295,-0c-0.08,0.079 -0.08,0.212 -0,0.296l0.916,0.912Zm8.446,-9.708c2.758,-0 5,2.242 5,5c0,0.904 -0.242,1.75 -0.658,2.483l-0.021,0.029c-0.867,1.488 -2.479,2.488 -4.321,2.488c-1.842,-0 -3.454,-1 -4.321,-2.488l-0.021,-0.029c-0.416,-0.733 -0.658,-1.579 -0.658,-2.483c0,-2.758 2.242,-5 5,-5Zm-4.142,-6.267c-0.229,0.542 -0.358,1.142 -0.358,1.767c0,1.271 0.529,2.417 1.375,3.237c-2.296,1.146 -3.875,3.521 -3.875,6.263c0,0.142 0.004,0.283 0.013,0.425c-1.134,-0.325 -2.392,-0.208 -3.492,0.429c-0.542,0.313 -0.992,0.721 -1.346,1.192c-0.117,-0.663 -0.175,-1.346 -0.175,-2.046c0,-5.167 3.275,-9.579 7.858,-11.267Zm8.284,0c4.583,1.688 7.858,6.1 7.858,11.267c0,0.7 -0.058,1.383 -0.175,2.046c-0.354,-0.471 -0.804,-0.879 -1.346,-1.192c-1.1,-0.637 -2.358,-0.754 -3.491,-0.429c0.008,-0.142 0.012,-0.283 0.012,-0.425c0,-2.742 -1.579,-5.117 -3.875,-6.263c0.846,-0.82 1.375,-1.966 1.375,-3.237c0,-0.625 -0.129,-1.225 -0.358,-1.767Zm-4.438,11.267l-1.266,1.267c-0.08,0.083 -0.08,0.212 -0,0.296c0.083,0.079 0.212,0.079 0.295,-0l1.267,-1.267l1.267,1.267c0.083,0.079 0.212,0.079 0.296,-0c0.079,-0.084 0.079,-0.213 -0,-0.296l-1.267,-1.267l1.267,-1.267c0.079,-0.083 0.079,-0.212 -0,-0.295c-0.084,-0.08 -0.213,-0.08 -0.296,-0l-1.267,1.266l-1.267,-1.266c-0.083,-0.08 -0.212,-0.08 -0.295,-0c-0.08,0.083 -0.08,0.212 -0,0.295l1.266,1.267Zm0.296,-7c-1.379,0 -2.5,-1.121 -2.5,-2.5c0,-1.379 1.121,-2.5 2.5,-2.5c1.379,0 2.5,1.121 2.5,2.5c0,1.379 -1.121,2.5 -2.5,2.5Zm-0.296,-2.412l-0.912,0.912c-0.079,0.079 -0.079,0.213 -0,0.296c0.083,0.079 0.212,0.079 0.296,-0l0.912,-0.917l0.913,0.917c0.083,0.079 0.212,0.079 0.295,-0c0.08,-0.083 0.08,-0.217 0,-0.296l-0.912,-0.912l0.912,-0.917c0.08,-0.079 0.08,-0.213 0,-0.292c-0.083,-0.083 -0.212,-0.083 -0.295,0l-0.913,0.913l-0.912,-0.913c-0.084,-0.083 -0.213,-0.083 -0.296,0c-0.079,0.079 -0.079,0.213 -0,0.292l0.912,0.917Z"/></svg></button>
+			</div>
+			<h2>Propiedades de conexion</h2>
+			<p>
+				<span id="PGCTRL">
+				<label for="PG">Engranaje padre #:</label>
+				<input type="text" id="PG" class="EV unitless PGin"><button class="EV select PGin" onclick="_(2,0)" title="Seleccionar engranaje padre">Seleccionar</button>
+				<label for="CAXLE">Conexion de eje:</label>
+				<input type="checkbox" checked="checked" id="CAXLE" class="thecheckbox"><br>
+				</span>
+				<label for="CA">Angulo de conexion:</label>
+				<input type="text" id="CA" class="EV"><button class="EV first" onclick="_(2,7,0)">–</button><button class="EV last" onclick="_(2,7,1)">+</button>
+
+				<span id="POSCTRL">
+				<label for="PX">Posicion X:</label>
+				<input type="text" id="PX" class="EV PXYin"><button class="EV first PXYin" onclick="_(2,8,0)">–</button><button class="EV last PXYin" onclick="_(2,8,1)">+</button>
+				<label for="PY">Posicion Y:</label>
+				<input type="text" id="PY" class="EV PXYin"><button class="EV first PXYin" onclick="_(2,9,0)">–</button><button class="EV last PXYin" onclick="_(2,9,1)">+</button>
+				</span>
+			</p>
+			<h2 id="gearproptitle">Propiedades del conjunto planetario</h2>
+			<p>
+				<label for="Name">Nombre (opcional):</label>
+				<input type="text" id="Name" class="EV nameinput"><br>
+
+				<span class="planetin_b gearin_b">
+					<span class="inonly_b">
+						<label for="P">Paso diametral (P):</label>
+						<input type="text" id="P" class="EV unitless"><button class="EV first" onclick="_(2,5,0)">–</button><button class="EV last" onclick="_(2,5,1)">+</button><br>
+					</span>
+					<span class="mmonly_b">
+						<label for="M">Modulo (M):</label>
+						<input type="text" id="M" class="EV unitless"><button class="EV first" onclick="_(2,2,0)">–</button><button class="EV last" onclick="_(2,2,1)">+</button>
+				</span>
+					</span>
+				</span>
+				<span class="chainin_b">
+					<label for="CP">Paso de cadena (P):</label>
+					<input type="text" id="CP"><button class="first" onclick="_(2,22,0)">–</button><button class="last" onclick="_(2,22,1)">+</button>
+				</span>
+				<span class="chainin_b beltin_b">
+					<label for="CD">Distancia entre ruedas (D):</label>
+					<input type="text" id="CD"><button class="first" onclick="_(2,23,0)">–</button><button class="last" onclick="_(2,23,1)">+</button><br>
+				</span>
+
+				<span class="gearin_b">
+					<label for="N">Numero de dientes* (N):</label>
+					<input type="text" id="N" class="EV unitless"><button class="EV first" onclick="_(2,1,0)">–</button><button class="EV last" onclick="_(2,1,1)">+</button><br>
+					<label for="D" class="mmonly_ib">Diametro base* (D):</label>
+					<label for="D" class="inonly_ib">Diametro primitivo* (D):</label>
+					<input type="text" id="D" class="EV"><br>
+				</span>
+			</p>
+			<h3 class="planetin_b">Configuracion planetaria</h3>
+			<p class="planetin_b">
+				<label for="ST">Engranaje solar</label>
+				<button id="STinput" class="first radio inputselect" onclick="_(2,10,0)" title="Establecer como entrada">Entrada</button><button id="STfixed" class="next radio fixedselect selected" onclick="_(2,11,0)" title="Establecer como fijo">Fijo</button><button id="SToutput" class="last radio outputselect" onclick="_(2,12,0)" title="Establecer como salida">Salida</button>
+				<br>
+				<label for="PT">Porta planetas</label>
+				<button id="PTinput" class="first radio selected inputselect" onclick="_(2,10,1)" title="Establecer como entrada">Entrada</button><button id="PTfixed" class="next radio fixedselect" onclick="_(2,11,1)" title="Establecer como fijo">Fijo</button><button id="PToutput" class="last radio outputselect" onclick="_(2,12,1)" title="Establecer como salida">Salida</button>
+				<br>
+				<label for="RT">Engranaje anular</label>
+				<button id="RTinput" class="first radio inputselect" onclick="_(2,10,2)" title="Establecer como entrada">Entrada</button><button id="RTfixed" class="next radio fixedselect" onclick="_(2,11,2)" title="Establecer como fijo">Fijo</button><button id="RToutput" class="last radio outputselect selected" onclick="_(2,12,2)" title="Establecer como salida">Salida</button>
+				<br>
+
+				<label for="NP">Numero de planetas:</label>
+				<input type="text" id="NP" class="unitless"><button class="first" onclick="_(2,16,0)">–</button><button class="last" onclick="_(2,16,1)">+</button><br>
+			</p>
+			<span class="planetin_b">
+				<h3>Numero de dientes</h3>
+				<p>
+				<label for="SN">Engranaje solar* (SN):</label>
+				<input type="text" id="SN" class="unitless"><button class="first" onclick="_(2,17,0)">–</button><button class="last" onclick="_(2,17,1)">+</button><br>
+				<label for="PN">Engranajes planetarios* (PN):</label>
+				<input type="text" id="PN" class="unitless"><button class="first" onclick="_(2,18,0)">–</button><button class="last" onclick="_(2,18,1)">+</button><br>
+				<label for="RN">Engranaje anular* (RN):</label>
+				<input type="text" id="RN" class="unitless"><button class="first" onclick="_(2,19,0)">–</button><button class="last" onclick="_(2,19,1)">+</button><br>
+				</p>
+			</span>
+			<span class="chainin_b">
+				<h3>Numero de dientes</h3>
+				<p>
+				<label for="CPN">Primario* (PN):</label>
+				<input type="text" id="CPN" class="unitless"><button class="first" onclick="_(2,20,0)">–</button><button class="last" onclick="_(2,20,1)">+</button><button id="CPS" onclick="_(2,20,2)">Intercambiar</button><br>
+				<label for="CSN">Secundario* (SN):</label>
+				<input type="text" id="CSN" class="unitless"><button class="first" onclick="_(2,21,0)">–</button><button class="last" onclick="_(2,21,1)">+</button><br>
+				</p>
+			</span>
+			<p class="planetin_b gearin_b">
+				<label for="PA">Angulo de presion (PA):</label>
+				<input type="text" id="PA" class="EV"><button class="EV first" onclick="_(2,6,0)">–</button><button class="EV last" onclick="_(2,6,1)">+</button><br>
+				<span class="rem inonly_b">* Shift + Enter: modifica el paso diametral</span>
+				<span class="rem mmonly_b">* Shift + Enter: modifica el modulo</span>
+				<br>
+			</p>
+
+			<!-- BOTON DE DESCARGA PNG -->
+			<h2>Descargar diseño</h2>
+			<p>
+				<label>Captura de pantalla:</label>
+				<button id="btnDescargarPNG" class="EV">Descargar PNG</button>
+				<br>
+				<label>Ficha tecnica:</label>
+				<button id="btnDescargarFicha" class="EV">Descargar Ficha Tecnica (PDF)</button>
+				<br>
+				<span class="rem" style="font-size:11px;opacity:0.6;">* Descarga directa sin registro</span>
+			</p>
+
+			<div>
+				<h2>Pantalla</h2>
+				<span id="unitpanel">
+					<label>Sistema de unidades:</label>
+					<button id="unitmm" class="first radio selected" onclick="_(2,3,0)" title="Usar unidades metricas">Metrico</button><button id="unitin" onclick="_(2,3,1)" class="last radio" title="Usar unidades imperiales">Imperial</button>
+				</span>
+				<label for="scale" id="scaleintitle">Escala (pixeles por unidad):</label>
+				<input type="text" id="scale" value="100" class="unitless"><button class="first" onclick="_(2,14,0)">–</button><button class="last" onclick="_(2,14,1)">+</button><br>
+				<label for="grid">Cuadricula:</label>
+				<input type="checkbox" id="grid" class="thecheckbox display"><br>
+				<label for="guides">Guias de engranaje:</label>
+				<input type="checkbox" id="guides" class="thecheckbox display"><br>
+				<label for="labels">Etiqueta de engranaje:</label>
+				<input type="checkbox" id="labels" class="thecheckbox display"><br>
+				<label for="theme">Tema de color:</label>
+				<button id="themelight" class="first radio themeselect" onclick="_(2,24,0)" title="Cambiar a tema claro">Claro</button><button id="themeblueprint" class="next radio selected themeselect" onclick="_(2,24,1)" title="Cambiar a tema Redprint">Redprint</button><button id="themedark" class="last radio themeselect" onclick="_(2,24,2)" title="Cambiar a tema oscuro">Oscuro</button>
+			</div>
+		</div>
+		<div id="topcontentcover"></div>
+		<div id="footer">
+			<div id="contentcover"></div>
+			<p><a href="http://www.edim.cl/" target="_blank"> 2026 - Creado por Diego Arancibia - EDIM Soluciones</a></p>
+		</div>
+
+		<!-- SCRIPT DE DESCARGA PNG (CORREGIDO) -->
+		<script>
+		// ================================================================
+		// CONFIGURACIÓN - AJUSTA AQUÍ LOS VALORES
+		// ================================================================
+
+		var CONFIG_DESCARGAR_PNG = {
+		    // Factor de escala (1 = normal, 2 = doble, 3 = triple)
+		    escala: 2,
+
+		    // Color de fondo ('#ffffff' = blanco, '#000000' = negro)
+		    colorFondo: '#ffffff',
+
+		    // Padding alrededor del diseño (en píxeles)
+		    padding: 80,
+
+		    // Tamaño máximo de la imagen (se mantiene proporción)
+		    anchoMaximo: 1200,
+		    altoMaximo: 900
+		};
+
+		// ================================================================
+		// FUNCION AUXILIAR: recorte automático por contenido (red de seguridad)
+		// Elimina franjas de color de fondo sobrantes alrededor del diseño real,
+		// por si el bbox calculado deja algún margen de más o de menos.
+		// ================================================================
+		function recortarCanvasPorContenido(canvas, colorFondoHex, paddingExtra) {
+		    try {
+		        var ctx = canvas.getContext('2d');
+		        var w = canvas.width, h = canvas.height;
+		        if (w < 4 || h < 4) return canvas;
+		        var data = ctx.getImageData(0, 0, w, h).data;
+
+		        var bg = {
+		            r: parseInt(colorFondoHex.slice(1, 3), 16),
+		            g: parseInt(colorFondoHex.slice(3, 5), 16),
+		            b: parseInt(colorFondoHex.slice(5, 7), 16)
+		        };
+		        var tol = 12;
+		        var minX = w, minY = h, maxX = 0, maxY = 0, encontrado = false;
+
+		        for (var y = 0; y < h; y += 2) {       // paso de 2px para rendimiento
+		            for (var x = 0; x < w; x += 2) {
+		                var i = (y * w + x) * 4;
+		                var a = data[i + 3];
+		                if (a === 0) continue;
+		                var r = data[i], g = data[i + 1], b = data[i + 2];
+		                if (Math.abs(r - bg.r) > tol || Math.abs(g - bg.g) > tol || Math.abs(b - bg.b) > tol) {
+		                    encontrado = true;
+		                    if (x < minX) minX = x;
+		                    if (x > maxX) maxX = x;
+		                    if (y < minY) minY = y;
+		                    if (y > maxY) maxY = y;
+		                }
+		            }
+		        }
+
+		        if (!encontrado) return canvas;
+
+		        minX = Math.max(0, minX - paddingExtra);
+		        minY = Math.max(0, minY - paddingExtra);
+		        maxX = Math.min(w - 1, maxX + paddingExtra);
+		        maxY = Math.min(h - 1, maxY + paddingExtra);
+
+		        var nw = maxX - minX + 1, nh = maxY - minY + 1;
+		        if (nw < 4 || nh < 4) return canvas;
+
+		        var out = document.createElement('canvas');
+		        out.width = nw; out.height = nh;
+		        var octx = out.getContext('2d');
+		        octx.fillStyle = colorFondoHex;
+		        octx.fillRect(0, 0, nw, nh);
+		        octx.drawImage(canvas, minX, minY, nw, nh, 0, 0, nw, nh);
+		        return out;
+		    } catch (e) {
+		        console.error('recortarCanvasPorContenido:', e);
+		        return canvas;
+		    }
+		}
+
+		// ================================================================
+		// FUNCIÓN PRINCIPAL
+		// ================================================================
+
+		function descargarPNGDirecto() {
+		    var screen = document.getElementById('screen');
+		    if (!screen) {
+		        alert('No se encontró el diseño para capturar.');
+		        return;
+		    }
+
+		    if (typeof html2canvas === 'undefined') {
+		        alert('La librería html2canvas no está disponible.');
+		        return;
+		    }
+
+		    var btn = document.getElementById('btnDescargarPNG');
+		    var textoOriginal = btn.textContent;
+		    btn.textContent = 'Generando...';
+		    btn.disabled = true;
+
+		    // Obtener todos los SVG del screen
+		    var svgs = screen.querySelectorAll('svg');
+		    if (!svgs.length) {
+		        alert('No hay elementos para capturar.');
+		        btn.textContent = textoOriginal;
+		        btn.disabled = false;
+		        return;
+		    }
+
+		    // Calcular los límites de todo el contenido usando coordenadas
+		    // REALES de pantalla (getBoundingClientRect), relativas a #screen.
+		    // NOTA: getBBox() se descarta porque devuelve coordenadas en el
+		    // sistema LOCAL de cada <svg>, no en el sistema de coordenadas
+		    // compartido de la pantalla, lo que producía recortes e imágenes
+		    // en blanco cuando había varios <svg> (ej. conjuntos planetarios).
+		    var screenRect = screen.getBoundingClientRect();
+		    var minX = Infinity, minY = Infinity, maxX = -Infinity, maxY = -Infinity;
+		    var hayDatos = false;
+
+		    svgs.forEach(function(svg) {
+		        try {
+		            var r = svg.getBoundingClientRect();
+		            if (r.width > 0 && r.height > 0) {
+		                var x1 = r.left - screenRect.left;
+		                var y1 = r.top - screenRect.top;
+		                var x2 = r.right - screenRect.left;
+		                var y2 = r.bottom - screenRect.top;
+		                minX = Math.min(minX, x1);
+		                minY = Math.min(minY, y1);
+		                maxX = Math.max(maxX, x2);
+		                maxY = Math.max(maxY, y2);
+		                hayDatos = true;
+		            }
+		        } catch (e) {}
+		    });
+
+		    // Si no se pudo calcular, usar el tamaño completo del contenedor screen
+		    if (!hayDatos) {
+		        minX = 0; minY = 0;
+		        maxX = screenRect.width; maxY = screenRect.height;
+		    }
+
+		    // Añadir padding
+		    var ancho = (maxX - minX) + CONFIG_DESCARGAR_PNG.padding * 2;
+		    var alto = (maxY - minY) + CONFIG_DESCARGAR_PNG.padding * 2;
+
+		    // Asegurar tamaño mínimo
+		    if (ancho < 300) ancho = 300;
+		    if (alto < 300) alto = 300;
+
+		    // Crear contenedor temporal
+		    var contenedor = document.createElement('div');
+		    contenedor.style.cssText =
+		        'position:absolute;left:-9999px;top:-9999px;' +
+		        'width:' + ancho + 'px;height:' + alto + 'px;' +
+		        'overflow:hidden;background:' + CONFIG_DESCARGAR_PNG.colorFondo;
+
+		    // Clonar el screen
+		    var clon = screen.cloneNode(true);
+		    clon.style.cssText =
+		        'position:relative;left:' + (CONFIG_DESCARGAR_PNG.padding - minX) + 'px;' +
+		        'top:' + (CONFIG_DESCARGAR_PNG.padding - minY) + 'px;' +
+		        'width:' + screenRect.width + 'px;height:' + screenRect.height + 'px;' +
+		        'overflow:visible';
+
+		    // Eliminar fondos de pantalla de los hijos
+		    var hijos = clon.querySelectorAll('*');
+		    hijos.forEach(function(el) {
+		        if (el.style && el.style.backgroundImage) {
+		            el.style.backgroundImage = 'none';
+		        }
+		        el.style.overflow = 'visible';
+		    });
+
+		    contenedor.appendChild(clon);
+		    document.body.appendChild(contenedor);
+
+		    // Capturar con html2canvas
+		    html2canvas(contenedor, {
+		        scale: CONFIG_DESCARGAR_PNG.escala,
+		        useCORS: true,
+		        allowTaint: true,
+		        backgroundColor: CONFIG_DESCARGAR_PNG.colorFondo,
+		        logging: false,
+		        width: ancho,
+		        height: alto,
+		        onclone: function(doc) {
+		            var c = doc.getElementById('screen');
+		            if (c) {
+		                c.style.cssText =
+		                    'position:relative;left:' + (CONFIG_DESCARGAR_PNG.padding - minX) + 'px;' +
+		                    'top:' + (CONFIG_DESCARGAR_PNG.padding - minY) + 'px;' +
+		                    'width:' + screenRect.width + 'px;height:' + screenRect.height + 'px;' +
+		                    'overflow:visible';
+		                var hijos2 = c.querySelectorAll('*');
+		                hijos2.forEach(function(el) {
+		                    el.style.overflow = 'visible';
+		                });
+		            }
+		        }
+		    })
+		    .then(function(canvas) {
+		        document.body.removeChild(contenedor);
+
+		        // Recorte automático de seguridad por si sobra franja de fondo
+		        canvas = recortarCanvasPorContenido(
+		            canvas,
+		            CONFIG_DESCARGAR_PNG.colorFondo,
+		            20 * CONFIG_DESCARGAR_PNG.escala
+		        );
+
+		        // Redimensionar si es necesario (manteniendo proporción)
+		        var img = new Image();
+		        img.onload = function() {
+		            var w = img.width;
+		            var h = img.height;
+		            var aspect = w / h;
+
+		            // Aplicar límites de tamaño
+		            if (w > CONFIG_DESCARGAR_PNG.anchoMaximo) {
+		                w = CONFIG_DESCARGAR_PNG.anchoMaximo;
+		                h = w / aspect;
+		            }
+		            if (h > CONFIG_DESCARGAR_PNG.altoMaximo) {
+		                h = CONFIG_DESCARGAR_PNG.altoMaximo;
+		                w = h * aspect;
+		            }
+
+		            w = Math.round(w);
+		            h = Math.round(h);
+
+		            var canvasFinal = document.createElement('canvas');
+		            canvasFinal.width = w;
+		            canvasFinal.height = h;
+		            var ctx = canvasFinal.getContext('2d');
+		            ctx.fillStyle = CONFIG_DESCARGAR_PNG.colorFondo;
+		            ctx.fillRect(0, 0, w, h);
+		            ctx.drawImage(img, 0, 0, w, h);
+
+		            var fecha = new Date();
+		            var fechaStr = fecha.getFullYear() + '-' +
+		                String(fecha.getMonth() + 1).padStart(2, '0') + '-' +
+		                String(fecha.getDate()).padStart(2, '0');
+
+		            var link = document.createElement('a');
+		            link.download = 'engranaje_' + fechaStr + '.png';
+		            link.href = canvasFinal.toDataURL('image/png');
+		            document.body.appendChild(link);
+		            link.click();
+		            document.body.removeChild(link);
+
+		            btn.textContent = textoOriginal;
+		            btn.disabled = false;
+		        };
+		        img.src = canvas.toDataURL('image/png');
+		    })
+		    .catch(function(error) {
+		        if (contenedor.parentNode) document.body.removeChild(contenedor);
+		        console.error('Error:', error);
+		        alert('Error al generar la imagen: ' + error.message);
+		        btn.textContent = textoOriginal;
+		        btn.disabled = false;
+		    });
+		}
+
+		// Asignar evento al botón
+		document.addEventListener('DOMContentLoaded', function() {
+		    var btn = document.getElementById('btnDescargarPNG');
+		    if (btn) {
+		        btn.addEventListener('click', descargarPNGDirecto);
+		    }
+		});
+		</script>
+
+		<!-- SCRIPT DE GENERACION DE FICHA TECNICA EN PDF (CORREGIDO) -->
+		<script>
+		// ================================================================
+		// FICHA TECNICA EDIM SOLUCIONES - COLORES CORPORATIVOS
+		// Blanco / Gris / Negro / Rojo. Logo: Logo-edim.png (carpeta raiz)
+		// ================================================================
+
+		// Captura el diseño actual (mismos criterios que la descarga PNG)
+		// pero devuelve el resultado en memoria en vez de descargarlo.
+		function capturarDisenoParaPDF() {
+		    return new Promise(function(resolve, reject) {
+		        var screen = document.getElementById('screen');
+		        if (!screen) { reject(new Error('No se encontró el diseño para capturar.')); return; }
+		        if (typeof html2canvas === 'undefined') { reject(new Error('La librería html2canvas no está disponible.')); return; }
+
+		        var svgs = screen.querySelectorAll('svg');
+		        if (!svgs.length) { reject(new Error('No hay elementos de diseño para capturar.')); return; }
+
+		        // Coordenadas reales de pantalla (ver nota en descargarPNGDirecto)
+		        var screenRect = screen.getBoundingClientRect();
+		        var minX = Infinity, minY = Infinity, maxX = -Infinity, maxY = -Infinity, hayDatos = false;
+		        svgs.forEach(function(svg) {
+		            try {
+		                var r = svg.getBoundingClientRect();
+		                if (r.width > 0 && r.height > 0) {
+		                    var x1 = r.left - screenRect.left;
+		                    var y1 = r.top - screenRect.top;
+		                    var x2 = r.right - screenRect.left;
+		                    var y2 = r.bottom - screenRect.top;
+		                    minX = Math.min(minX, x1);
+		                    minY = Math.min(minY, y1);
+		                    maxX = Math.max(maxX, x2);
+		                    maxY = Math.max(maxY, y2);
+		                    hayDatos = true;
+		                }
+		            } catch (e) {}
+		        });
+		        if (!hayDatos) {
+		            minX = 0; minY = 0;
+		            maxX = screenRect.width; maxY = screenRect.height;
+		        }
+
+		        var padding = 60;
+		        var ancho = (maxX - minX) + padding * 2;
+		        var alto = (maxY - minY) + padding * 2;
+		        if (ancho < 300) ancho = 300;
+		        if (alto < 300) alto = 300;
+
+		        var contenedor = document.createElement('div');
+		        contenedor.style.cssText =
+		            'position:absolute;left:-9999px;top:-9999px;' +
+		            'width:' + ancho + 'px;height:' + alto + 'px;' +
+		            'overflow:hidden;background:#ffffff';
+
+		        var clon = screen.cloneNode(true);
+		        clon.style.cssText =
+		            'position:relative;left:' + (padding - minX) + 'px;' +
+		            'top:' + (padding - minY) + 'px;' +
+		            'width:' + screenRect.width + 'px;height:' + screenRect.height + 'px;' +
+		            'overflow:visible';
+
+		        clon.querySelectorAll('*').forEach(function(el) {
+		            if (el.style && el.style.backgroundImage) { el.style.backgroundImage = 'none'; }
+		            el.style.overflow = 'visible';
+		        });
+
+		        contenedor.appendChild(clon);
+		        document.body.appendChild(contenedor);
+
+		        html2canvas(contenedor, {
+		            scale: 2,
+		            useCORS: true,
+		            allowTaint: true,
+		            backgroundColor: '#ffffff',
+		            logging: false,
+		            width: ancho,
+		            height: alto,
+		            onclone: function(doc) {
+		                var c = doc.getElementById('screen');
+		                if (c) {
+		                    c.style.cssText =
+		                        'position:relative;left:' + (padding - minX) + 'px;' +
+		                        'top:' + (padding - minY) + 'px;' +
+		                        'width:' + screenRect.width + 'px;height:' + screenRect.height + 'px;' +
+		                        'overflow:visible';
+		                    c.querySelectorAll('*').forEach(function(el) { el.style.overflow = 'visible'; });
+		                }
+		            }
+		        }).then(function(canvas) {
+		            document.body.removeChild(contenedor);
+
+		            // Recorte automático de seguridad (red adicional contra franjas sobrantes)
+		            canvas = recortarCanvasPorContenido(canvas, '#ffffff', 40);
+
+		            resolve({
+		                dataUrl: canvas.toDataURL('image/png'),
+		                width: canvas.width,
+		                height: canvas.height
+		            });
+		        }).catch(function(error) {
+		            if (contenedor.parentNode) { document.body.removeChild(contenedor); }
+		            reject(error);
+		        });
+		    });
+		}
+
+		// Carga el logo EDIM como imagen base64 para insertarlo en el PDF.
+		// IMPORTANTE: muchos hostings (Linux) distinguen mayusculas/minusculas
+		// en los nombres de archivo. Se prueban varias variantes de nombre/ruta
+		// por robustez; si ninguna carga, la ficha se genera igual (sin logo).
+		var RUTAS_LOGO_EDIM = [
+		    'logo-edim.png',
+		    'assets/logo-edim.png',
+
+		];
+
+		function cargarImagenLogo(ruta) {
+		    return new Promise(function(resolve) {
+		        var urlAbsoluta;
+		        try { urlAbsoluta = new URL(ruta, document.baseURI).href; } catch (e) { urlAbsoluta = ruta; }
+
+		        var img = new Image();
+		        img.onload = function() {
+		            try {
+		                var c = document.createElement('canvas');
+		                c.width = img.naturalWidth;
+		                c.height = img.naturalHeight;
+		                var ctx = c.getContext('2d');
+		                ctx.drawImage(img, 0, 0);
+		                var dataUrl = c.toDataURL('image/png');
+		                console.info('[Logo EDIM] OK: ' + urlAbsoluta + ' (' + img.naturalWidth + 'x' + img.naturalHeight + ')');
+		                resolve({ dataUrl: dataUrl, width: img.naturalWidth, height: img.naturalHeight });
+		            } catch (e) {
+		                console.warn('[Logo EDIM] Cargó pero no se pudo leer el canvas (posible bloqueo CORS/tainted canvas): ' + urlAbsoluta, e);
+		                resolve(null);
+		            }
+		        };
+		        img.onerror = function() {
+		            console.warn('[Logo EDIM] No se pudo cargar: ' + urlAbsoluta);
+		            resolve(null);
+		        };
+		        img.src = ruta;
+		    });
+		}
+
+		async function cargarLogoEDIM() {
+		    for (var i = 0; i < RUTAS_LOGO_EDIM.length; i++) {
+		        var resultado = await cargarImagenLogo(RUTAS_LOGO_EDIM[i]);
+		        if (resultado) {
+		            console.info('Logo EDIM cargado desde: ' + RUTAS_LOGO_EDIM[i]);
+		            return resultado;
+		        }
+		    }
+		    console.warn('No se encontró el logo EDIM en ninguna de las rutas probadas: ' + RUTAS_LOGO_EDIM.join(', '));
+		    return null;
+		}
+
+		function _vacio(valor) {
+		    return (valor === undefined || valor === null || valor === '') ? '-' : valor;
+		}
+
+		// Recolecta los datos tecnicos actuales leyendo directamente los campos del panel.
+		function recopilarDatosEngranaje() {
+		    function val(id) {
+		        var el = document.getElementById(id);
+		        if (!el) return '';
+		        if (el.type === 'checkbox') return el.checked ? 'Si' : 'No';
+		        return el.value || '';
+		    }
+		    function marcado(id) {
+		        var el = document.getElementById(id);
+		        return !!(el && el.classList.contains('selected'));
+		    }
+		    function tipoSeleccionado() {
+		        if (marcado('typegear')) return 'Engranaje Recto';
+		        if (marcado('typeinternal')) return 'Engranaje Interno';
+		        if (marcado('typechain')) return 'Rueda de Cadena';
+		        if (marcado('typeplanetary')) return 'Conjunto Planetario';
+		        return '-';
+		    }
+		    function unidadSeleccionada() { return marcado('unitmm') ? 'Metrico (mm)' : 'Imperial (in)'; }
+		    function temaSeleccionado() {
+		        if (marcado('themelight')) return 'Claro';
+		        if (marcado('themeblueprint')) return 'Redprint';
+		        if (marcado('themedark')) return 'Oscuro';
+		        return '-';
+		    }
+		    function rolPlanetario(prefijo) {
+		        if (marcado(prefijo + 'input')) return 'Entrada';
+		        if (marcado(prefijo + 'fixed')) return 'Fijo';
+		        if (marcado(prefijo + 'output')) return 'Salida';
+		        return '-';
+		    }
+
+		    var esMetrico = marcado('unitmm');
+		    var esPlanetario = marcado('typeplanetary');
+		    var esCadena = marcado('typechain');
+
+		    var listaEngranajes = [];
+		    document.querySelectorAll('#gearselector li').forEach(function(li) {
+		        var texto = li.textContent.replace(/\s+/g, ' ').trim();
+		        if (texto) { listaEngranajes.push(texto); }
+		    });
+
+		    var filas = [];
+		    filas.push(['Nombre', _vacio(val('Name'))]);
+		    filas.push(['Tipo de engranaje', tipoSeleccionado()]);
+		    filas.push(['Sistema de unidades', unidadSeleccionada()]);
+		    filas.push(['Tema de color', temaSeleccionado()]);
+		    filas.push(['Velocidad (RPM)', _vacio(val('RPM'))]);
+		    filas.push(['Escala (px/unidad)', _vacio(val('scale'))]);
+
+		    if (!esPlanetario && !esCadena) {
+		        filas.push([esMetrico ? 'Modulo (M)' : 'Paso diametral (P)', esMetrico ? _vacio(val('M')) : _vacio(val('P'))]);
+		        filas.push(['Numero de dientes (N)', _vacio(val('N'))]);
+		        filas.push([esMetrico ? 'Diametro base (D)' : 'Diametro primitivo (D)', _vacio(val('D'))]);
+		        filas.push(['Angulo de presion (PA)', _vacio(val('PA'))]);
+		    }
+
+		    if (esPlanetario) {
+		        filas.push(['Numero de planetas', _vacio(val('NP'))]);
+		        filas.push(['Dientes engranaje solar (SN)', _vacio(val('SN'))]);
+		        filas.push(['Dientes engranajes planetarios (PN)', _vacio(val('PN'))]);
+		        filas.push(['Dientes engranaje anular (RN)', _vacio(val('RN'))]);
+		        filas.push(['Rol engranaje solar', rolPlanetario('ST')]);
+		        filas.push(['Rol porta-planetas', rolPlanetario('PT')]);
+		        filas.push(['Rol engranaje anular', rolPlanetario('RT')]);
+		        filas.push(['Angulo de presion (PA)', _vacio(val('PA'))]);
+		    }
+
+		    if (esCadena) {
+		        filas.push(['Dientes primario (PN)', _vacio(val('CPN'))]);
+		        filas.push(['Dientes secundario (SN)', _vacio(val('CSN'))]);
+		        filas.push(['Paso de cadena (P)', _vacio(val('CP'))]);
+		        filas.push(['Distancia entre ruedas (D)', _vacio(val('CD'))]);
+		    }
+
+		    filas.push(['Angulo de conexion', _vacio(val('CA'))]);
+		    filas.push(['Posicion X', _vacio(val('PX'))]);
+		    filas.push(['Posicion Y', _vacio(val('PY'))]);
+
+		    return {
+		        filas: filas,
+		        engranajesEnConjunto: listaEngranajes,
+		        fecha: new Date().toLocaleString('es-CL')
+		    };
+		}
+
+		// Funcion principal: arma el PDF de la ficha tecnica (datos + imagen del diseño)
+		function generarFichaTecnicaPDF() {
+		    var btn = document.getElementById('btnDescargarFicha');
+		    var textoOriginal = btn ? btn.textContent : '';
+		    if (btn) { btn.textContent = 'Generando...'; btn.disabled = true; }
+
+		    Promise.all([
+		        capturarDisenoParaPDF(),
+		        cargarLogoEDIM()
+		    ]).then(function(resultados) {
+		        var diseno = resultados[0];
+		        var logo = resultados[1];
+		        var datos = recopilarDatosEngranaje();
+
+		        if (typeof window.jspdf === 'undefined') {
+		            throw new Error('La librería jsPDF no está disponible.');
+		        }
+
+		        var jsPDFCtor = window.jspdf.jsPDF;
+		        var doc = new jsPDFCtor({ orientation: 'p', unit: 'mm', format: 'a4' });
+
+		        var pageWidth = doc.internal.pageSize.getWidth();
+		        var pageHeight = doc.internal.pageSize.getHeight();
+		        var margin = 12;
+
+		        // Paleta corporativa EDIM Soluciones
+		        var ROJO = [200, 16, 46];
+		        var NEGRO = [30, 30, 30];
+		        var GRIS = [110, 110, 110];
+		        var GRIS_CLARO = [238, 238, 238];
+
+		        // ---- Encabezado ----
+		        doc.setFillColor(NEGRO[0], NEGRO[1], NEGRO[2]);
+		        doc.rect(0, 0, pageWidth, 28, 'F');
+		        doc.setFillColor(ROJO[0], ROJO[1], ROJO[2]);
+		        doc.rect(0, 28, pageWidth, 2.5, 'F');
+
+		        if (logo) {
+		            var logoAltoMM = 16;
+		            var logoAnchoMM = logoAltoMM * (logo.width / logo.height);
+		            try {
+		                // Placa blanca detras del logo: el logo tiene texto oscuro
+		                // ("EDIM Soluciones") que se vuelve invisible si se dibuja
+		                // directamente sobre el encabezado negro. La placa asegura
+		                // contraste sin importar el tema/color de fondo.
+		                var logoPadY = 2.5;
+		                var logoPadX = 3;
+		                doc.setFillColor(255, 255, 255);
+		                doc.roundedRect(
+		                    margin - logoPadX,
+		                    6 - logoPadY,
+		                    logoAnchoMM + logoPadX * 2,
+		                    logoAltoMM + logoPadY * 2,
+		                    1.5, 1.5, 'F'
+		                );
+		                doc.addImage(logo.dataUrl, 'PNG', margin, 6, logoAnchoMM, logoAltoMM);
+		            } catch (e) {
+		                console.error('[Logo EDIM] Error al insertar la imagen en el PDF (doc.addImage):', e);
+		            }
+		        } else {
+		            console.warn('[Logo EDIM] La ficha se genera sin logo: revisa los mensajes "[Logo EDIM]" anteriores en la consola para ver que ruta(s) se intentaron.');
+		        }
+
+		        doc.setTextColor(255, 255, 255);
+		        doc.setFont('helvetica', 'bold');
+		        doc.setFontSize(15);
+		        doc.text('FICHA TECNICA DE ENGRANAJE', pageWidth - margin, 12, { align: 'right' });
+		        doc.setFont('helvetica', 'normal');
+		        doc.setFontSize(9);
+		        doc.text('EDIM Soluciones  -  www.edim.cl', pageWidth - margin, 19, { align: 'right' });
+		        doc.text('Generado: ' + datos.fecha, pageWidth - margin, 24, { align: 'right' });
+
+		        var cursorY = 38;
+
+		        // ---- Tabla de parametros de diseño ----
+		        doc.setTextColor(NEGRO[0], NEGRO[1], NEGRO[2]);
+		        doc.setFont('helvetica', 'bold');
+		        doc.setFontSize(11);
+		        doc.text('Parametros de diseno', margin, cursorY);
+		        doc.setDrawColor(ROJO[0], ROJO[1], ROJO[2]);
+		        doc.setLineWidth(0.6);
+		        doc.line(margin, cursorY + 1.5, margin + 45, cursorY + 1.5);
+		        cursorY += 5;
+
+		        doc.autoTable({
+		            startY: cursorY,
+		            margin: { left: margin, right: margin },
+		            head: [['Parametro', 'Valor']],
+		            body: datos.filas,
+		            theme: 'grid',
+		            styles: { fontSize: 9, textColor: NEGRO, lineColor: [210, 210, 210], lineWidth: 0.2, cellPadding: 2 },
+		            headStyles: { fillColor: NEGRO, textColor: 255, fontStyle: 'bold' },
+		            alternateRowStyles: { fillColor: GRIS_CLARO },
+		            columnStyles: { 0: { fontStyle: 'bold', cellWidth: 70 } }
+		        });
+
+		        cursorY = doc.lastAutoTable.finalY + 8;
+
+		        // ---- Lista de engranajes del conjunto (solo si hay mas de uno) ----
+		        if (datos.engranajesEnConjunto.length > 1) {
+		            doc.setFont('helvetica', 'bold');
+		            doc.setFontSize(11);
+		            doc.setTextColor(NEGRO[0], NEGRO[1], NEGRO[2]);
+		            doc.text('Engranajes del conjunto', margin, cursorY);
+		            doc.setDrawColor(ROJO[0], ROJO[1], ROJO[2]);
+		            doc.line(margin, cursorY + 1.5, margin + 55, cursorY + 1.5);
+		            cursorY += 5;
+
+		            var filasEngranajes = datos.engranajesEnConjunto.map(function(nombre, i) {
+		                return [String(i + 1), nombre];
+		            });
+
+		            doc.autoTable({
+		                startY: cursorY,
+		                margin: { left: margin, right: margin },
+		                head: [['#', 'Engranaje']],
+		                body: filasEngranajes,
+		                theme: 'grid',
+		                styles: { fontSize: 9, textColor: NEGRO, lineColor: [210, 210, 210], lineWidth: 0.2, cellPadding: 2 },
+		                headStyles: { fillColor: GRIS, textColor: 255, fontStyle: 'bold' },
+		                alternateRowStyles: { fillColor: GRIS_CLARO },
+		                columnStyles: { 0: { cellWidth: 12 } }
+		            });
+
+		            cursorY = doc.lastAutoTable.finalY + 8;
+		        }
+
+		        // ---- Imagen del diseño ----
+		        var espacioDisponible = pageHeight - cursorY - 22;
+		        if (espacioDisponible < 40) {
+		            doc.addPage();
+		            cursorY = margin;
+		            espacioDisponible = pageHeight - cursorY - 22;
+		        }
+
+		        doc.setFont('helvetica', 'bold');
+		        doc.setFontSize(11);
+		        doc.setTextColor(NEGRO[0], NEGRO[1], NEGRO[2]);
+		        doc.text('Diseno generado', margin, cursorY);
+		        doc.setDrawColor(ROJO[0], ROJO[1], ROJO[2]);
+		        doc.line(margin, cursorY + 1.5, margin + 35, cursorY + 1.5);
+		        cursorY += 6;
+
+		        var anchoDisponibleMM = pageWidth - margin * 2;
+		        var imgAspect = diseno.width / diseno.height;
+		        var imgAnchoMM = anchoDisponibleMM;
+		        var imgAltoMM = imgAnchoMM / imgAspect;
+
+		        if (imgAltoMM > espacioDisponible) {
+		            imgAltoMM = espacioDisponible;
+		            imgAnchoMM = imgAltoMM * imgAspect;
+		        }
+
+		        var imgX = margin + (anchoDisponibleMM - imgAnchoMM) / 2;
+
+		        doc.setDrawColor(200, 200, 200);
+		        doc.setLineWidth(0.3);
+		        doc.rect(imgX - 1, cursorY - 1, imgAnchoMM + 2, imgAltoMM + 2);
+		        doc.addImage(diseno.dataUrl, 'PNG', imgX, cursorY, imgAnchoMM, imgAltoMM);
+
+		        // ---- Pie de pagina (todas las paginas) ----
+		        var totalPaginas = doc.internal.getNumberOfPages();
+		        for (var p = 1; p <= totalPaginas; p++) {
+		            doc.setPage(p);
+		            doc.setFillColor(ROJO[0], ROJO[1], ROJO[2]);
+		            doc.rect(0, pageHeight - 8, pageWidth, 1.2, 'F');
+		            doc.setTextColor(GRIS[0], GRIS[1], GRIS[2]);
+		            doc.setFont('helvetica', 'normal');
+		            doc.setFontSize(8);
+		            doc.text('EDIM Soluciones  -  www.edim.cl', margin, pageHeight - 3);
+		            doc.text('Pagina ' + p + ' de ' + totalPaginas, pageWidth - margin, pageHeight - 3, { align: 'right' });
+		        }
+
+		        var fecha = new Date();
+		        var fechaStr = fecha.getFullYear() + '-' +
+		            String(fecha.getMonth() + 1).padStart(2, '0') + '-' +
+		            String(fecha.getDate()).padStart(2, '0');
+		        doc.save('ficha_tecnica_engranaje_' + fechaStr + '.pdf');
+
+		        if (btn) { btn.textContent = textoOriginal; btn.disabled = false; }
+		    }).catch(function(error) {
+		        console.error('Error generando ficha tecnica:', error);
+		        alert('Error al generar la ficha tecnica: ' + error.message);
+		        if (btn) { btn.textContent = textoOriginal; btn.disabled = false; }
+		    });
+		}
+
+		document.addEventListener('DOMContentLoaded', function() {
+		    var btnFicha = document.getElementById('btnDescargarFicha');
+		    if (btnFicha) {
+		        btnFicha.addEventListener('click', generarFichaTecnicaPDF);
+		    }
+		});
+		</script>
+
+		<div id="dragbar" data-tauri-drag-region></div>
+		<div id="doctitle"></div>
+		<div id="regstatus">No registrado</div>
+		<div id="devout"><pre id="out"></pre></div>
+
+		<div id="cookies" class="appdisabled">
+			<p>Permites el uso de cookies en este sitio para almacenar tus preferencias, como el sistema de unidades o el tema utilizado?</p>
+			<button onclick="_(2,28,0)">Sin cookies</button><button onclick="_(2,28,1)">Aceptar</button>
+		</div>
+	</body>
+	<script>
+		_(0);	// starting the app
+		$("p.title").each(function() { _(1, $( this ), true, 5, 5  ); });
+		_(1, $("#footer a"), true, 1, 1 );
+	</script>
+
+</html>

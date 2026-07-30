@@ -1,0 +1,104 @@
+/* ============================================
+   Dark Mode Styles
+   ============================================ */
+
+body.dark-mode {
+    --bg-primary: #1a1a2e;
+    --bg-secondary: #16213e;
+    --bg-card: #1f1f3a;
+    --text-primary: #e0e0e0;
+    --text-secondary: #a0a0b0;
+    --text-muted: #6a6a80;
+    --border: #2a2a4a;
+    --shadow-light: #2a2a4a;
+    --shadow-dark: #0d0d1a;
+    --accent: #ff5252;
+    --accent-hover: #ff1744;
+    --accent-light: #4a1a1a;
+}
+
+body.dark-mode .loading-overlay {
+    background: var(--bg-primary);
+}
+body.dark-mode .loading-spinner {
+    border-color: var(--bg-card);
+    border-top-color: var(--accent);
+}
+body.dark-mode .notification {
+    background: var(--bg-card);
+    box-shadow: 8px 8px 16px var(--shadow-dark), -8px -8px 16px var(--shadow-light);
+}
+body.dark-mode .modal {
+    background: var(--bg-primary);
+    box-shadow: 12px 12px 24px var(--shadow-dark), -12px -12px 24px var(--shadow-light);
+}
+body.dark-mode .project-info-bar {
+    box-shadow: inset 3px 3px 6px var(--shadow-dark), inset -3px -3px 6px var(--shadow-light);
+}
+body.dark-mode .neu-table th {
+    background: var(--bg-primary);
+}
+body.dark-mode .neu-table tbody tr:hover {
+    background: rgba(255,82,82,0.08);
+}
+body.dark-mode .canvas-wrapper {
+    background: #12122a;
+}
+body.dark-mode .minimap,
+body.dark-mode .coordinates-display {
+    background: var(--bg-card);
+    box-shadow: 4px 4px 8px var(--shadow-dark), -4px -4px 8px var(--shadow-light);
+}
+body.dark-mode .stat-card {
+    background: var(--bg-primary);
+    box-shadow: inset 2px 2px 4px var(--shadow-dark), inset -2px -2px 4px var(--shadow-light);
+}
+body.dark-mode .chart-container {
+    background: var(--bg-primary);
+    box-shadow: inset 2px 2px 4px var(--shadow-dark), inset -2px -2px 4px var(--shadow-light);
+}
+body.dark-mode .ruler-top,
+body.dark-mode .ruler-left {
+    background: var(--bg-card);
+}
+body.dark-mode .canvas-tooltip {
+    background: var(--bg-card);
+    box-shadow: 6px 6px 12px var(--shadow-dark), -6px -6px 12px var(--shadow-light);
+}
+body.dark-mode .neu-dropzone {
+    background: var(--bg-primary);
+}
+body.dark-mode .neu-dropzone:hover,
+body.dark-mode .neu-dropzone.dragover {
+    background: rgba(255,82,82,0.05);
+}
+
+/* Print styles */
+@media print {
+    .app-header,
+    .panel-left,
+    .panel-right,
+    .canvas-toolbar,
+    .minimap,
+    .coordinates-display,
+    .notification-container,
+    .modal-container {
+        display: none !important;
+    }
+    .app-layout {
+        height: auto;
+    }
+    .panel-center {
+        width: 100%;
+        position: static;
+    }
+    .canvas-wrapper {
+        height: auto;
+        overflow: visible;
+    }
+    #cutCanvas {
+        position: static;
+        top: 0;
+        left: 0;
+    }
+}
